@@ -1,0 +1,17 @@
+{
+  "login": "login",
+  "signInWithGoogle": "Sign in with Google+",
+  "or": "or",
+  "enterYourMail": "enter your mail...",
+  "enterYourPassword": "enter your password...",
+  "reEnterYourPassword": "re-enter your password...",
+  "EnterYourName": "Enter your name",
+  "logIn": "Log in",
+  "dontHaveAnAccount": "Don't have an account?",
+  "registration": "registration",
+  "registerNow": "register Now",
+  "goBack": "Go back",
+  "hello": "Hello,",
+  "exit": "exit",
+  "marchTrello": "March trello"
+}

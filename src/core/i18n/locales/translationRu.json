@@ -1,0 +1,17 @@
+{
+  "or": "или",
+  "login": "логин",
+  "signInWithGoogle": "Войти через Google+",
+  "enterYourMail": "Введите вашу почту...",
+  "enterYourPassword": "Введите ваш пароль...",
+  "reEnterYourPassword": "Введите повторно ваш пароль...",
+  "EnterYourName": "Введите ваше имя",
+  "logIn": "Войти",
+  "dontHaveAnAccount": "Нет аккаунта?",
+  "registration": "Регистрация",
+  "registerNow": "Зарегистрироваться",
+  "goBack": "Вернуться обратно",
+  "hello": "Привет,",
+  "exit": "выход",
+  "marchTrello": "March trello"
+}
