@@ -4,7 +4,8 @@ enum colors {
   form_shadow = 'rgba(34, 60, 80, 0.42)',
   form_main_color = '#8298f9',
   form_main_focus_color = '#7854ff',
-  form_default_color = '#fff'
+  form_default_color = '#fff',
+  without_color = 'transparent'
 }
 
 export default colors;

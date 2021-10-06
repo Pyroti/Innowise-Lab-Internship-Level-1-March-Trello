@@ -5,7 +5,7 @@ const SingInButton = styled.button`
   width: 90px;
   height: 40px;
   border-radius: 10px;
-  background-color: transparent;
+  background-color: ${colors.without_color};
   cursor: pointer;
   outline: none;
   border: 2px ${colors.form_main_color} solid;
