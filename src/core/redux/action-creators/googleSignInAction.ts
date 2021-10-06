@@ -30,8 +30,6 @@ export const googleSignInInitiate = () => {
       .then(({ user }) => {
         dispatch(googleSignInSuccess(user));
       })
-      .catch((error: { message: string }) =>
-        dispatch(googleSignInFail(error.message))
-      );
+      .catch((error: Error) => dispatch(googleSignInFail(error.message)));
   };
 };

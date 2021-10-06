@@ -2,10 +2,10 @@
   "or": "или",
   "login": "логин",
   "signInWithGoogle": "Войти через Google+",
-  "enterYourMail": "Введите вашу почту...",
-  "enterYourPassword": "Введите ваш пароль...",
-  "reEnterYourPassword": "Введите повторно ваш пароль...",
-  "EnterYourName": "Введите ваше имя",
+  "enterYourMail": "Введите почту...",
+  "enterYourPassword": "Введите пароль...",
+  "reEnterYourPassword": "Повторите пароль...",
+  "enterYourName": "Введите имя...",
   "logIn": "Войти",
   "dontHaveAnAccount": "Нет аккаунта?",
   "registration": "Регистрация",
@@ -13,5 +13,6 @@
   "goBack": "Вернуться обратно",
   "hello": "Привет,",
   "exit": "выход",
-  "marchTrello": "March trello"
+  "marchTrello": "March trello",
+  "createAccount": "Создать аккаунт"
 }

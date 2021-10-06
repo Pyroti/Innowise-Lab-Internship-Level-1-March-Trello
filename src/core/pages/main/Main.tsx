@@ -1,8 +1,9 @@
-import firebase from 'firebase/compat';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
+import MainRoutes from '../../constants/MainRouters';
+import { auth } from '../../firebase/firebase';
 import { useTypedSelector } from '../../hooks/useTypeSelector';
 import { logoutInitiate } from '../../redux/action-creators/logoutAction';
 
@@ -14,7 +15,7 @@ const Main: React.FC = () => {
 
   useEffect(() => {
     if (!currentUser) {
-      history.push('/login');
+      history.push(MainRoutes.login);
     }
   }, [currentUser, history]);
 
@@ -28,7 +29,7 @@ const Main: React.FC = () => {
     <div>
       <h2>{t('marchTrello')}</h2>
       <h3>
-        {t('hello')} {firebase.auth().currentUser?.displayName}
+        {t('hello')} {auth.currentUser?.displayName}
       </h3>
       <button type="button" onClick={handleAuth}>
         {t('exit')}

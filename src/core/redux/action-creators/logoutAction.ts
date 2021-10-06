@@ -21,8 +21,6 @@ export const logoutInitiate = () => {
     auth
       .signOut()
       .then(() => dispatch(logoutSuccess()))
-      .catch((error: { message: string }) =>
-        dispatch(logoutFail(error.message))
-      );
+      .catch((error: Error) => dispatch(logoutFail(error.message)));
   };
 };

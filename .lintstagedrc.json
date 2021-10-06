@@ -1,0 +1,6 @@
+{
+  "!(.eslintrc).{ts,tsx}": ["npx eslint --fix --max-warnings 0"],
+  "*.{ts,tsx,html,css,json,md}": [
+    "prettier --config .prettierrc 'src/**/*.ts' --write"
+  ]
+}

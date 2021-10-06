@@ -32,8 +32,6 @@ export const registerInitiate = (
         });
         dispatch(registerSuccess(user));
       })
-      .catch((error: { message: string }) =>
-        dispatch(registerFail(error.message))
-      );
+      .catch((error: Error) => dispatch(registerFail(error.message)));
   };
 };

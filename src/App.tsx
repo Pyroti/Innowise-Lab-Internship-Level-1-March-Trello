@@ -1,34 +1,38 @@
+import firebase from 'firebase/compat/app';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import AppWrapper from './core/components/styled/AppWrapper';
 import MainRoutes from './core/constants/MainRouters';
 import { auth } from './core/firebase/firebase';
+import Login from './core/pages/auth/login/Login';
+import Register from './core/pages/auth/register/Register';
 import Main from './core/pages/main/Main';
-import Login from './core/pages/start/Login';
-import Register from './core/pages/start/Register';
-import { setUser } from './core/redux/action-creators/setUserAction';
+import setUserInitiate from './core/redux/action-creators/setUserAction';
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    auth.onAuthStateChanged((authUser) => {
+    auth.onAuthStateChanged((authUser: firebase.User | null) => {
       if (authUser) {
-        dispatch(setUser(authUser));
+        dispatch(setUserInitiate(authUser));
       } else {
-        dispatch(setUser(null));
+        dispatch(setUserInitiate(null));
       }
     });
   }, [dispatch]);
 
   return (
-    <BrowserRouter>
-      <Switch>
-        <Route exact path={MainRoutes.main} component={Main} />
-        <Route path={MainRoutes.login} component={Login} />
-        <Route path={MainRoutes.register} component={Register} />
-      </Switch>
-    </BrowserRouter>
+    <AppWrapper>
+      <BrowserRouter>
+        <Switch>
+          <Route exact path={MainRoutes.main} component={Main} />
+          <Route path={MainRoutes.login} component={Login} />
+          <Route path={MainRoutes.register} component={Register} />
+        </Switch>
+      </BrowserRouter>
+    </AppWrapper>
   );
 };
 

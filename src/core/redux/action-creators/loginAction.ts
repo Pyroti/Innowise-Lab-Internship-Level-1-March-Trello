@@ -25,8 +25,6 @@ export const loginInitiate = (email: string, password: string) => {
       .then(({ user }) => {
         dispatch(loginSuccess(user));
       })
-      .catch((error: { message: string }) =>
-        dispatch(loginFail(error.message))
-      );
+      .catch((error: Error) => dispatch(loginFail(error.message)));
   };
 };
