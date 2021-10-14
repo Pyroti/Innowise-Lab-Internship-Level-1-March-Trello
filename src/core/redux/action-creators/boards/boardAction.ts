@@ -39,30 +39,31 @@ const writeBoardData = (
 };
 
 const getBoardsData = (
-  boardsId: string[],
-  boards: { [x: string]: BoardState }
+  boardsId: string[]
 ) => {
   return async (dispatch: Dispatch<BoardAction>): Promise<void> => {
     dispatch(boardStart());
     const db = getDatabase();
-    console.log(boardsId);
     const boardsData = await Promise.all(
       boardsId.map((boardId) => get(ref(db, `/boards/${boardId}`)))
     );
-    boardsData.forEach((snapshot, index) => {
-      // console.log(boardId);
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        console.log('getBoardsData');
-        console.log(data);
-        const br = Object.values({ ...boards, [boardsId[index]]: data })[0];
-        dispatch(boardSuccess(br));
+    const allBoards = boardsData.map((snapshot) => snapshot.val());
+    const finalBoards = allBoards.reduce((acc, board) => {
+      if (board?.boardId) {
+        acc[board.boardId] = board;
       }
-    });
-    // .catch((error) => {
-    //   const err = (error as Error).message;
-    //   dispatch(boardFail(err));
-    // })
+
+      return acc;
+    }, {} as BoardState);
+    dispatch(boardSuccess(finalBoards));
+    
+    // boardsData.forEach((snapshot, index) => {
+    //   if (snapshot.exists()) {
+    //     const boardData = snapshot.val();
+    //     // const br = Object.values({ ...boards, [boardsId[index]]: data })[0];
+    //     dispatch(boardSuccess(br));
+    //   }
+    // });
   };
 };
 

@@ -14,31 +14,28 @@ import {
 } from '../../redux/action-creators/users/userAction';
 import authSelector from '../../redux/selectors/authSelector';
 import { BoardState } from '../../redux/types/boards/boardTypes';
+
 const Main: React.FC = () => {
   const { currentUser } = useTypedSelector(authSelector);
   const { user } = useTypedSelector((state) => state.user);
   const { board } = useTypedSelector((state) => state.board);
 
-  console.log(board);
-  console.log(user);
-  if (board !== null) {
-    console.log(Object.keys(board));
+  const filterBoards = () => {
+    return Object.keys(user?.boards ?? {})
+      .map((boardId) => {
+        return board?.[boardId]
+      })
+      // .filter((board) => board);
   }
-  console.log(Object.keys(user.boards));
-  // console.log(currentUser);
 
-  const filter = () =>
-    Object.keys(user.boards).reduce(
-      (a: { [id: string]: BoardState }, key) => ((a[key] = board[key]), a),
-      {}
-    );
+  [undefined, undefined, undefined]
 
-  if (board !== null) {
-    console.log(filter());
-  }
 
   const isLoading = useTypedSelector((state) => state.user.isLoading);
+
+
   const dispatch = useDispatch();
+
   const { t } = useTranslation();
   const [boardState, setBoardState] = useState({
     title: ''
@@ -50,11 +47,17 @@ const Main: React.FC = () => {
   };
 
   useEffect(() => {
-    Promise.all([
-      dispatch(getUserData(currentUser)),
-      dispatch(getBoardsData(Object.keys(user.boards), board))
-    ]);
-  }, []);
+    dispatch(getUserData(currentUser));
+  }, [currentUser, dispatch])
+
+  useEffect(() => {
+    console.log('IN USE EFFECT', user);
+    if (user) {
+      dispatch(getBoardsData(Object.keys(user.boards)));
+    }
+  }, [dispatch, user]);
+
+  console.log('IN COMPONENT', user);
 
   const handleAuth = () => {
     if (currentUser) {
@@ -79,6 +82,9 @@ const Main: React.FC = () => {
     return <div>загрузка</div>;
   }
 
+  const dataToRender = Object.values(filterBoards() ?? []);
+  console.log('dataToRender', dataToRender);
+
   return (
     <div>
       <h2>{t('marchTrello')}</h2>
@@ -91,12 +97,11 @@ const Main: React.FC = () => {
       <br />
 
       <div>
-        {board !== null ? (
-          Object.values(filter()).map((boardd) => {
-            return <div key={boardd.boardId}>{boardd.title}</div>;
+        {board && (
+          dataToRender.map((boardd) => {
+            console.log('boardd', boardd);
+            return boardd && <div key={boardd.boardId}>{boardd.title}</div>;
           })
-        ) : (
-          <div></div>
         )}
       </div>
       <br />

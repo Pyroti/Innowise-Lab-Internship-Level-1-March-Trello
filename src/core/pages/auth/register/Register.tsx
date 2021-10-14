@@ -37,7 +37,6 @@ const Register: React.FC = () => {
 
   useEffect(() => {
     if (currentUser) {
-      console.log(currentUser);
       dispatch(writeUserData(currentUser?.uid, displayName, email));
       setState({
         email: '',

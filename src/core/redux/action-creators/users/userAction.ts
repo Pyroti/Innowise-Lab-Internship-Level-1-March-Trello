@@ -69,8 +69,6 @@ const getUserData = (currentUser: firebase.User | null) => {
         if (snapshot.exists()) {
           const data = snapshot.val();
           dispatch(userSuccess(data));
-        } else {
-          console.log('No data available');
         }
       })
       .catch((error) => {
