@@ -7,8 +7,9 @@ import AuthContent from '../../../components/styled/AuthContent';
 import AuthForm from '../../../components/styled/AuthForm';
 import MainRoutes from '../../../constants/MainRouters';
 import { useTypedSelector } from '../../../hooks/useTypeSelector';
-import { registerInitiate } from '../../../redux/action-creators/registerAction';
-import userSelector from '../../../redux/selectors/userSelector';
+import { registerInitiate } from '../../../redux/action-creators/auth/registerAction';
+import { writeUserData } from '../../../redux/action-creators/users/userAction';
+import authSelector from '../../../redux/selectors/authSelector';
 import AuthButtons from './styled/AuthButtons';
 import SingInButton from './styled/SingInButton';
 import SingUpButton from './styled/SingUpButton';
@@ -22,7 +23,7 @@ const Register: React.FC = () => {
   });
   const { email, password, displayName, passwordConfirm } = state;
 
-  const { currentUser } = useTypedSelector(userSelector);
+  const { currentUser } = useTypedSelector(authSelector);
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -34,16 +35,23 @@ const Register: React.FC = () => {
     }
   }, [currentUser, history]);
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    if (password === passwordConfirm) {
-      dispatch(registerInitiate(email, password, displayName));
+  useEffect(() => {
+    if (currentUser) {
+      console.log(currentUser);
+      dispatch(writeUserData(currentUser?.uid, displayName, email));
       setState({
         email: '',
         password: '',
         displayName: '',
         passwordConfirm: ''
       });
+    }
+  }, [currentUser]);
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (password === passwordConfirm) {
+      dispatch(registerInitiate(email, password, displayName));
     }
   };
 

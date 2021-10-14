@@ -8,9 +8,9 @@ import AuthContent from '../../../components/styled/AuthContent';
 import AuthForm from '../../../components/styled/AuthForm';
 import MainRoutes from '../../../constants/MainRouters';
 import { useTypedSelector } from '../../../hooks/useTypeSelector';
-import { googleSignInInitiate } from '../../../redux/action-creators/googleSignInAction';
-import { loginInitiate } from '../../../redux/action-creators/loginAction';
-import userSelector from '../../../redux/selectors/userSelector';
+import { googleSignInInitiate } from '../../../redux/action-creators/auth/googleSignInAction';
+import { loginInitiate } from '../../../redux/action-creators/auth/loginAction';
+import authSelector from '../../../redux/selectors/authSelector';
 import AuthButtons from './styled/AuthButtons';
 import GoogleButton from './styled/GoogleButton';
 import SingInButton from './styled/SingInButton';
@@ -24,7 +24,7 @@ const Login: React.FC = () => {
 
   const { email, password } = state;
 
-  const { currentUser } = useTypedSelector(userSelector);
+  const { currentUser } = useTypedSelector(authSelector);
 
   const history = useHistory();
   const { t } = useTranslation();

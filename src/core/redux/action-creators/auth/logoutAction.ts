@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux';
-import { auth } from '../../firebase/firebase';
-import { LogoutAction, LogoutActionTypes } from '../types/logoutTypes';
+import { auth } from '../../../firebase/firebase';
+import { LogoutAction, LogoutActionTypes } from '../../types/auth/logoutTypes';
 
 const logoutStart = (): LogoutAction => ({
   type: LogoutActionTypes.LOGOUT_START

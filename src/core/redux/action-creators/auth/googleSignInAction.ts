@@ -1,10 +1,10 @@
 import firebase from 'firebase/compat/app';
 import { Dispatch } from 'redux';
-import { auth, googleAuthProvider } from '../../firebase/firebase';
+import { auth, googleAuthProvider } from '../../../firebase/firebase';
 import {
   GoogleSignInAction,
   GoogleSignInTypes
-} from '../types/googleSignInTypes';
+} from '../../types/auth/googleSignInTypes';
 
 const googleSignInStart = (): GoogleSignInAction => ({
   type: GoogleSignInTypes.GOOGLE_SIGN_IN_START

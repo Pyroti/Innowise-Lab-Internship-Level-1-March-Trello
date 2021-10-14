@@ -8,7 +8,8 @@ import { auth } from './core/firebase/firebase';
 import Login from './core/pages/auth/login/Login';
 import Register from './core/pages/auth/register/Register';
 import Main from './core/pages/main/Main';
-import setUserInitiate from './core/redux/action-creators/setUserAction';
+import setUserInitiate from './core/redux/action-creators/auth/setUserAction';
+import PrivateRoute from './privateRouter';
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
@@ -27,7 +28,7 @@ const App: React.FC = () => {
     <AppWrapper>
       <BrowserRouter>
         <Switch>
-          <Route exact path={MainRoutes.main} component={Main} />
+          <PrivateRoute exact path={MainRoutes.main} component={Main} />
           <Route path={MainRoutes.login} component={Login} />
           <Route path={MainRoutes.register} component={Register} />
         </Switch>

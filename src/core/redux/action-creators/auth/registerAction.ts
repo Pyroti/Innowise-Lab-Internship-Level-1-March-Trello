@@ -1,7 +1,10 @@
 import firebase from 'firebase/compat/app';
 import { Dispatch } from 'redux';
-import { auth } from '../../firebase/firebase';
-import { RegisterAction, RegisterActionTypes } from '../types/registerTypes';
+import { auth } from '../../../firebase/firebase';
+import {
+  RegisterAction,
+  RegisterActionTypes
+} from '../../types/auth/registerTypes';
 
 const registerStart = (): RegisterAction => ({
   type: RegisterActionTypes.REGISTER_START
@@ -22,9 +25,9 @@ export const registerInitiate = (
   password: string,
   displayName: string
 ) => {
-  return (dispatch: Dispatch<RegisterAction>): void => {
+  return async (dispatch: Dispatch<RegisterAction>): Promise<void> => {
     dispatch(registerStart());
-    auth
+    await auth
       .createUserWithEmailAndPassword(email, password)
       .then(({ user }) => {
         user?.updateProfile({

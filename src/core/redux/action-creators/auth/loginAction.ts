@@ -1,13 +1,13 @@
 import firebase from 'firebase/compat/app';
 import { Dispatch } from 'redux';
-import { auth } from '../../firebase/firebase';
-import { LoginAction, LoginActionTypes } from '../types/loginTypes';
+import { auth } from '../../../firebase/firebase';
+import { LoginAction, LoginActionTypes } from '../../types/auth/loginTypes';
 
 const loginStart = (): LoginAction => ({
   type: LoginActionTypes.LOGIN_START
 });
 
-const loginSuccess = (user: firebase.User | null): LoginAction => ({
+const loginSuccess = (user: firebase.User): LoginAction => ({
   type: LoginActionTypes.LOGIN_SUCCESS,
   payload: user
 });

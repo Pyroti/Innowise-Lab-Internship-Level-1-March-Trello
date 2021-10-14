@@ -1,63 +1,48 @@
-import firebase from 'firebase/compat/app';
 import {
-  GoogleSignInAction,
-  GoogleSignInTypes
-} from '../types/googleSignInTypes';
-import { LoginAction, LoginActionTypes } from '../types/loginTypes';
-import { LogoutAction, LogoutActionTypes } from '../types/logoutTypes';
-import { RegisterAction, RegisterActionTypes } from '../types/registerTypes';
-import { SetUserActionType, SetUserTypes } from '../types/setUserTypes';
+  UserAction,
+  UserActionTypes,
+  UserState
+} from '../types/users/userTypes';
 
-export interface UserState {
-  loading: boolean;
-  currentUser: firebase.User | null;
-  error: firebase.User | string | null;
+export interface InitUserState {
+  user: UserState;
+  isLoading: boolean;
+  error: string;
 }
 
-const initialState: UserState = {
-  loading: false,
-  currentUser: null,
-  error: null
+const initialState: InitUserState = {
+  user: {
+    userId: '',
+    username: '',
+    email: '',
+    boards: {
+      '': { boardId: '' }
+    }
+  },
+  error: null,
+  isLoading: false
 };
 
-type ActionTypes =
-  | GoogleSignInAction
-  | LoginAction
-  | LogoutAction
-  | RegisterAction
-  | SetUserActionType;
-
-const userReducer = (state = initialState, action: ActionTypes): UserState => {
+const userReducer = (
+  state = initialState,
+  action: UserAction
+): InitUserState => {
   switch (action.type) {
-    case RegisterActionTypes.REGISTER_START:
-    case LoginActionTypes.LOGIN_START:
-    case LogoutActionTypes.LOGOUT_START:
-    case GoogleSignInTypes.GOOGLE_SIGN_IN_START:
+    case UserActionTypes.USER_START:
       return {
         ...state,
-        loading: true
+        isLoading: true
       };
-    case LogoutActionTypes.LOGOUT_SUCCESS:
+    case UserActionTypes.USER_SUCCESS:
       return {
         ...state,
-        currentUser: null
+        isLoading: false,
+        user: action.payload
       };
-    case SetUserTypes.SET_USER:
-    case RegisterActionTypes.REGISTER_SUCCESS:
-    case LoginActionTypes.LOGIN_SUCCESS:
-    case GoogleSignInTypes.GOOGLE_SIGN_IN_SUCCESS:
+    case UserActionTypes.USER_FAIL:
       return {
         ...state,
-        loading: false,
-        currentUser: action.payload
-      };
-    case RegisterActionTypes.REGISTER_FAIL:
-    case LoginActionTypes.LOGIN_FAIL:
-    case LogoutActionTypes.LOGOUT_FAIL:
-    case GoogleSignInTypes.GOOGLE_SIGN_IN_FAIL:
-      return {
-        ...state,
-        loading: false,
+        isLoading: false,
         error: action.payload
       };
     default:
