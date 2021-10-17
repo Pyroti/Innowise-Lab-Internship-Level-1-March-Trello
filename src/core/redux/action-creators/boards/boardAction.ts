@@ -22,15 +22,17 @@ const boardFail = (error: string): BoardAction => ({
 
 const writeBoardData = (
   boardId: string,
+  order: number,
   title: string,
-  boards: { [x: string]: BoardState }
+  boards: { [id: string]: BoardState }
 ) => {
   return async (dispatch: Dispatch<BoardAction>): Promise<void> => {
-    const board = { boardId, title };
+    const board = { boardId, order, title };
     dispatch(boardStart());
     const db = getDatabase();
     set(ref(db, `boards/${boardId}`), {
       boardId: boardId,
+      order: order,
       title: title
     })
       .then(() => dispatch(boardSuccess({ ...boards, [boardId]: board })))
@@ -38,9 +40,7 @@ const writeBoardData = (
   };
 };
 
-const getBoardsData = (
-  boardsId: string[]
-) => {
+const getBoardsData = (boardsId: string[]) => {
   return async (dispatch: Dispatch<BoardAction>): Promise<void> => {
     dispatch(boardStart());
     const db = getDatabase();
@@ -52,18 +52,9 @@ const getBoardsData = (
       if (board?.boardId) {
         acc[board.boardId] = board;
       }
-
       return acc;
     }, {} as BoardState);
     dispatch(boardSuccess(finalBoards));
-    
-    // boardsData.forEach((snapshot, index) => {
-    //   if (snapshot.exists()) {
-    //     const boardData = snapshot.val();
-    //     // const br = Object.values({ ...boards, [boardsId[index]]: data })[0];
-    //     dispatch(boardSuccess(br));
-    //   }
-    // });
   };
 };
 

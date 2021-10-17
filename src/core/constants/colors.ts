@@ -5,7 +5,22 @@ enum colors {
   form_main_color = '#8298f9',
   form_main_focus_color = '#7854ff',
   form_default_color = '#fff',
-  without_color = 'transparent'
+  loaderBorder = '#f3f3f3',
+  loaderBorderTop = '#3498db',
+  without_color = 'transparent',
+
+  HeaderStyled_background = '#82abfb',
+  HeaderStyled_color = '#fff',
+
+  CloseModalWrapper_background = '#fff',
+  CloseModalWrapper_color = '#000',
+
+  CloseModalContent_color = '#141414',
+  CloseModalContent_button_background = '#141414',
+  CloseModalContent_button_color = '#fff',
+
+  HeaderButtonStyled_color = '#fff',
+  CloseModalBackground_background = 'rgba(0,0,0,0.8)'
 }
 
 export default colors;

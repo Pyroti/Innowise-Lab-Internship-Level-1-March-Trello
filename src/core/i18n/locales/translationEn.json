@@ -14,5 +14,8 @@
   "hello": "Hello,",
   "exit": "exit",
   "marchTrello": "March trello",
-  "createAccount": "Create account"
+  "createAccount": "Create account",
+  "cancel": "Cancel",
+  "AreYouSureYouWantToLogOut?": "Are you sure you want to log out?",
+  "addBoard": "Add board"
 }

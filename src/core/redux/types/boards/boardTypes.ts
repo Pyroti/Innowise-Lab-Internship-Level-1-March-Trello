@@ -9,6 +9,7 @@ export enum BoardActionTypes {
 export interface BoardState {
   boardId: string;
   title: string;
+  order: number;
   cards?: {
     card: CardState;
   };

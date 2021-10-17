@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
+import Header from '../../components/header/Header';
+import Loader from '../../components/styled/Loader';
 import { useTypedSelector } from '../../hooks/useTypeSelector';
-import { logoutInitiate } from '../../redux/action-creators/auth/logoutAction';
 import {
   getBoardsData,
   writeBoardData
@@ -13,30 +13,27 @@ import {
   writeUserBoardData
 } from '../../redux/action-creators/users/userAction';
 import authSelector from '../../redux/selectors/authSelector';
+import userSelector from '../../redux/selectors/userSelector';
 import { BoardState } from '../../redux/types/boards/boardTypes';
+import AddBoard from './AddBoard/AddBoard';
+import Board from './styled/Board';
+import BoardWrap from './styled/BoardWrap';
 
 const Main: React.FC = () => {
   const { currentUser } = useTypedSelector(authSelector);
-  const { user } = useTypedSelector((state) => state.user);
+  const { user, isLoading } = useTypedSelector(userSelector);
   const { board } = useTypedSelector((state) => state.board);
 
   const filterBoards = () => {
     return Object.keys(user?.boards ?? {})
       .map((boardId) => {
-        return board?.[boardId]
+        return board?.[boardId];
       })
-      // .filter((board) => board);
-  }
-
-  [undefined, undefined, undefined]
-
-
-  const isLoading = useTypedSelector((state) => state.user.isLoading);
-
+      .filter((board) => board);
+  };
 
   const dispatch = useDispatch();
 
-  const { t } = useTranslation();
   const [boardState, setBoardState] = useState({
     title: ''
   });
@@ -46,76 +43,75 @@ const Main: React.FC = () => {
     dispatch(getUserData(currentUser));
   };
 
+  console.log(currentUser);
+
   useEffect(() => {
     dispatch(getUserData(currentUser));
-  }, [currentUser, dispatch])
+  }, [currentUser, dispatch]);
 
   useEffect(() => {
     console.log('IN USE EFFECT', user);
-    if (user) {
+    if (user && user.boards) {
       dispatch(getBoardsData(Object.keys(user.boards)));
     }
   }, [dispatch, user]);
 
   console.log('IN COMPONENT', user);
 
-  const handleAuth = () => {
-    if (currentUser) {
-      dispatch(logoutInitiate());
-    }
-  };
-
   const handleChange = (event: React.ChangeEvent) => {
     const { name, value } = event.target as HTMLInputElement;
     setBoardState((prevState) => ({ ...prevState, [name]: value }));
   };
 
+  const createOrderNum = () => {
+    if (user.boards) {
+      return Object.keys(user.boards).length + 1;
+    } else {
+      return 1;
+    }
+  };
+
   const addBoard = () => {
     const boardId = uuidv4();
-    dispatch(writeBoardData(boardId, title, board));
+    const order = createOrderNum();
+    dispatch(writeBoardData(boardId, order, title, board));
     dispatch(writeUserBoardData(currentUser, boardId));
     setBoardState({ title: '' });
     getCurrentUserData();
   };
 
+  const sortBorder = (a: BoardState, b: BoardState) => {
+    if (a.order > b.order) {
+      return 1;
+    } else {
+      return -1;
+    }
+  };
+
   if (isLoading) {
-    return <div>загрузка</div>;
+    return <Loader />;
   }
 
   const dataToRender = Object.values(filterBoards() ?? []);
+
   console.log('dataToRender', dataToRender);
-
   return (
-    <div>
-      <h2>{t('marchTrello')}</h2>
-      <h3>
-        {t('hello')} {user?.username}
-      </h3>
-      <button type="button" onClick={handleAuth}>
-        {t('exit')}
-      </button>
-      <br />
-
-      <div>
-        {board && (
-          dataToRender.map((boardd) => {
+    <>
+      <Header />
+      <BoardWrap>
+        {board &&
+          dataToRender.sort(sortBorder).map((boardd) => {
             console.log('boardd', boardd);
-            return boardd && <div key={boardd.boardId}>{boardd.title}</div>;
-          })
-        )}
-      </div>
-      <br />
-      <input
-        placeholder="Введите заголовок доски"
-        type="text"
-        name="title"
-        value={title}
-        onChange={handleChange}
-      />
-      <button type="button" onClick={addBoard}>
-        Добавить доску
-      </button>
-    </div>
+            return boardd && <Board key={boardd.boardId}>{boardd.title}</Board>;
+          })}
+
+        <AddBoard
+          title={title}
+          handleChange={handleChange}
+          addBoard={addBoard}
+        />
+      </BoardWrap>
+    </>
   );
 };
 

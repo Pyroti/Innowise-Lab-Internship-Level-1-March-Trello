@@ -12,7 +12,10 @@
   "registerNow": "Зарегистрироваться",
   "goBack": "Вернуться обратно",
   "hello": "Привет,",
-  "exit": "выход",
+  "exit": "Выйти",
   "marchTrello": "March trello",
-  "createAccount": "Создать аккаунт"
+  "createAccount": "Создать аккаунт",
+  "cancel": "Отмена",
+  "AreYouSureYouWantToLogOut": "Вы уверены, что хотите выйти?",
+  "addBoard": "Добавить доску"
 }
