@@ -48,14 +48,11 @@ const writeUserBoardData = (
   boardId: string
 ) => {
   return async (): Promise<void> => {
-    // const user = { userId, username, email };
     const db = getDatabase();
     const usersRef = ref(db, `users/${currentUser?.uid}/boards/${boardId}`);
     set(usersRef, {
       boardId: boardId
     });
-    // .then(() => dispatch(userSet(user)))
-    // .catch((error: Error) => dispatch(userFail(error.message)));
   };
 };
 

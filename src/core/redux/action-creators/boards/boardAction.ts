@@ -27,7 +27,14 @@ const writeBoardData = (
   boards: { [id: string]: BoardState }
 ) => {
   return async (dispatch: Dispatch<BoardAction>): Promise<void> => {
-    const board = { boardId, order, title };
+    const board = {
+      boardId,
+      order,
+      title,
+      cards: {
+        key: { cardId: '' }
+      }
+    };
     dispatch(boardStart());
     const db = getDatabase();
     set(ref(db, `boards/${boardId}`), {

@@ -17,5 +17,7 @@
   "createAccount": "Создать аккаунт",
   "cancel": "Отмена",
   "AreYouSureYouWantToLogOut": "Вы уверены, что хотите выйти?",
-  "addBoard": "Добавить доску"
+  "addBoard": "Добавить доску",
+  "addCard": "Добавить карточку",
+  "enterTitle": "Введите заголовок"
 }

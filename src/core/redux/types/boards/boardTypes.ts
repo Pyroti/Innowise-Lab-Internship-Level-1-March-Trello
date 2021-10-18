@@ -1,5 +1,3 @@
-import { CardState } from '../cards/cardTypes';
-
 export enum BoardActionTypes {
   BOARD_START = 'BOARD_START',
   BOARD_SUCCESS = 'BOARD_SUCCESS',
@@ -10,8 +8,8 @@ export interface BoardState {
   boardId: string;
   title: string;
   order: number;
-  cards?: {
-    card: CardState;
+  cards: {
+    [key: string]: { cardId: string };
   };
 }
 

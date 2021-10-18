@@ -6,7 +6,7 @@ const Board = styled.div`
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-  width: 300px;
+  width: 325px;
   height: 100%;
   margin: 10px;
   padding: 10px;

@@ -17,5 +17,7 @@
   "createAccount": "Create account",
   "cancel": "Cancel",
   "AreYouSureYouWantToLogOut?": "Are you sure you want to log out?",
-  "addBoard": "Add board"
+  "addBoard": "Add board",
+  "addCard": "Add card",
+  "enterTitle": "Enter title"
 }

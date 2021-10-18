@@ -1,5 +1,4 @@
-import firebase from 'firebase/compat/app';
-import { getDatabase, onValue, ref, set } from 'firebase/database';
+import { get, getDatabase, ref, set } from 'firebase/database';
 import { Dispatch } from 'redux';
 import {
   CardAction,
@@ -7,7 +6,11 @@ import {
   CardState
 } from '../../types/cards/cardTypes';
 
-const cardSet = (user: CardState): CardAction => ({
+const cardStart = (): CardAction => ({
+  type: CardActionTypes.CARD_START
+});
+
+const cardSuccess = (user: { [id: string]: CardState }): CardAction => ({
   type: CardActionTypes.CARD_SUCCSES,
   payload: user
 });
@@ -17,44 +20,56 @@ const cardFail = (error: string): CardAction => ({
   payload: error
 });
 
-const writeUserData = (
+const writeCardData = (
   cardId: string | undefined,
+  order: number,
   title: string,
-  textContent: string
+  textContent: string,
+  cards: { [id: string]: CardState }
 ) => {
   return async (dispatch: Dispatch<CardAction>): Promise<void> => {
-    const card = { cardId, title, textContent };
+    const card = { cardId, order, title, textContent };
+    dispatch(cardStart());
     const db = getDatabase();
-    set(ref(db, 'card/' + cardId), {
+    set(ref(db, 'cards/' + cardId), {
       cardId: cardId,
+      order: order,
       title: title,
       textContent: textContent
     })
-      .then(() => dispatch(cardSet(card)))
+      .then(() => dispatch(cardSuccess({ ...cards, [cardId]: card })))
       .catch((error: Error) => dispatch(cardFail(error.message)));
   };
 };
 
-/*TODO: to correct*/
-const getUserData = (currentUser: firebase.User | null) => {
-  return async (dispatch: Dispatch<CardAction>): Promise<void> => {
-    try {
-      const db = getDatabase();
-      const cardRef = ref(db, 'card/' + currentUser?.uid);
-      let data: CardState = {
-        cardId: undefined,
-        title: '',
-        textContent: ''
-      };
-      onValue(cardRef, (snapshot) => {
-        data = snapshot.val();
-      });
-      dispatch(cardSet(data));
-    } catch (error) {
-      const err = (error as Error).message;
-      dispatch(cardFail(err));
-    }
+const writeBoardCardData = (boardId: string, cardId: string) => {
+  return async (): Promise<void> => {
+    const db = getDatabase();
+    const usersRef = ref(db, `boards/${boardId}/cards/${cardId}`);
+    set(usersRef, {
+      cardId: cardId
+    });
   };
 };
 
-export { writeUserData, getUserData };
+const getCardsData = (cardsId: string[]) => {
+  return async (dispatch: Dispatch<CardAction>): Promise<void> => {
+    dispatch(cardStart());
+    const db = getDatabase();
+    const cardsData = await Promise.all(
+      cardsId.map((cardId) => get(ref(db, `/cards/${cardId}`)))
+    );
+    const allcards = cardsData.map((snapshot) => snapshot.val());
+    console.log('allcards', allcards);
+    const finalCards = allcards.reduce((acc, card) => {
+      if (card?.cardId) {
+        acc[card.cardId] = card;
+      }
+      return acc;
+    }, {} as CardState);
+    console.log('finalCards', finalCards);
+    dispatch(cardSuccess(finalCards));
+  };
+};
+
+export { writeCardData, getCardsData, writeBoardCardData };

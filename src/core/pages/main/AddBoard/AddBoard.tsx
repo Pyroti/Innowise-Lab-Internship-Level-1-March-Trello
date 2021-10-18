@@ -8,13 +8,16 @@ import CloseBoardIcon from './styled/CloseBoardIcon';
 
 interface Props {
   title: string;
+  name: string;
   handleChange: (event: ChangeEvent<Element>) => void;
-  addBoard: () => void;
+  addBoard?: () => void;
+  boardId?: string;
+  addCard?: (boardId: string) => void;
 }
 
 const AddBoard: React.FC<Props> = (props) => {
   const [isOpenAddWrap, setIsOpenAddWrap] = useState(false);
-  const { title, handleChange, addBoard } = props;
+  const { title, name, handleChange, addBoard, boardId, addCard } = props;
 
   const { t } = useTranslation();
 
@@ -24,20 +27,33 @@ const AddBoard: React.FC<Props> = (props) => {
     return (
       <AddBoardWrap>
         <Input
-          placeholder="Введите заголовок доски"
+          placeholder={t('enterTitle')}
           type="text"
-          name="title"
+          name={name}
           value={title}
           onChange={handleChange}
         />
-        <AddBoardWrapButton type="button" onClick={addBoard}>
-          {t('addBoard')}
-        </AddBoardWrapButton>
+        {boardId ? (
+          <AddBoardWrapButton type="button" onClick={() => addCard(boardId)}>
+            {t('addCard')}
+          </AddBoardWrapButton>
+        ) : (
+          <AddBoardWrapButton type="button" onClick={addBoard}>
+            {t('addBoard')}
+          </AddBoardWrapButton>
+        )}
+
         <CloseBoardIcon onClick={openAddwrap} />
       </AddBoardWrap>
     );
   }
-
+  if (boardId) {
+    return (
+      <AddBoardButton type="button" onClick={openAddwrap}>
+        {t('addCard')}
+      </AddBoardButton>
+    );
+  }
   return (
     <AddBoardButton type="button" onClick={openAddwrap}>
       {t('addBoard')}

@@ -5,7 +5,9 @@ import {
 } from '../types/cards/cardTypes';
 
 export interface InitBoardState {
-  card: CardState;
+  card: {
+    [id: string]: CardState;
+  };
   isLoading: boolean;
   error: string;
 }
@@ -24,8 +26,7 @@ const userReducer = (
     case CardActionTypes.CARD_START:
       return {
         ...state,
-        isLoading: true,
-        card: action.payload
+        isLoading: true
       };
     case CardActionTypes.CARD_SUCCSES:
       return {

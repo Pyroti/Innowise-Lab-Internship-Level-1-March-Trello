@@ -6,18 +6,20 @@ export enum CardActionTypes {
 
 export interface CardState {
   cardId: string;
+  order: number;
   title: string;
   textContent?: string;
 }
 
 interface CardStartAction {
   type: CardActionTypes.CARD_START;
-  payload: CardState;
 }
 
 interface CardSuccessAction {
   type: CardActionTypes.CARD_SUCCSES;
-  payload: CardState;
+  payload: {
+    [id: string]: CardState;
+  };
 }
 
 interface CardFailAction {

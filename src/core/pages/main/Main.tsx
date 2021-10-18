@@ -13,16 +13,18 @@ import {
   writeUserBoardData
 } from '../../redux/action-creators/users/userAction';
 import authSelector from '../../redux/selectors/authSelector';
+import boardSelector from '../../redux/selectors/boardSelector';
 import userSelector from '../../redux/selectors/userSelector';
 import { BoardState } from '../../redux/types/boards/boardTypes';
 import AddBoard from './AddBoard/AddBoard';
+import Cards from './cards/Cards';
 import Board from './styled/Board';
 import BoardWrap from './styled/BoardWrap';
 
 const Main: React.FC = () => {
   const { currentUser } = useTypedSelector(authSelector);
   const { user, isLoading } = useTypedSelector(userSelector);
-  const { board } = useTypedSelector((state) => state.board);
+  const { board } = useTypedSelector(boardSelector);
 
   const filterBoards = () => {
     return Object.keys(user?.boards ?? {})
@@ -35,9 +37,9 @@ const Main: React.FC = () => {
   const dispatch = useDispatch();
 
   const [boardState, setBoardState] = useState({
-    title: ''
+    boardTitle: ''
   });
-  const { title } = boardState;
+  const { boardTitle } = boardState;
 
   const getCurrentUserData = () => {
     dispatch(getUserData(currentUser));
@@ -57,8 +59,9 @@ const Main: React.FC = () => {
   }, [dispatch, user]);
 
   console.log('IN COMPONENT', user);
+  console.log('IN COMPONENT board', board);
 
-  const handleChange = (event: React.ChangeEvent) => {
+  const handleChangeBoard = (event: React.ChangeEvent) => {
     const { name, value } = event.target as HTMLInputElement;
     setBoardState((prevState) => ({ ...prevState, [name]: value }));
   };
@@ -74,9 +77,9 @@ const Main: React.FC = () => {
   const addBoard = () => {
     const boardId = uuidv4();
     const order = createOrderNum();
-    dispatch(writeBoardData(boardId, order, title, board));
+    dispatch(writeBoardData(boardId, order, boardTitle, board));
     dispatch(writeUserBoardData(currentUser, boardId));
-    setBoardState({ title: '' });
+    setBoardState({ boardTitle: '' });
     getCurrentUserData();
   };
 
@@ -95,6 +98,14 @@ const Main: React.FC = () => {
   const dataToRender = Object.values(filterBoards() ?? []);
 
   console.log('dataToRender', dataToRender);
+  // if (user && user.boards && board.cards) {
+  //   console.log(
+  //     'result',
+  //     Object.keys(user.boards).map((boardId) =>
+  //       Object.keys(board[boardId].cards)
+  //     )
+  //   );
+  // }
   return (
     <>
       <Header />
@@ -102,12 +113,19 @@ const Main: React.FC = () => {
         {board &&
           dataToRender.sort(sortBorder).map((boardd) => {
             console.log('boardd', boardd);
-            return boardd && <Board key={boardd.boardId}>{boardd.title}</Board>;
+            return (
+              boardd && (
+                <Board key={boardd.boardId}>
+                  {boardd.title}
+                  <Cards boardId={boardd.boardId} />
+                </Board>
+              )
+            );
           })}
-
         <AddBoard
-          title={title}
-          handleChange={handleChange}
+          title={boardTitle}
+          name="boardTitle"
+          handleChange={handleChangeBoard}
           addBoard={addBoard}
         />
       </BoardWrap>
