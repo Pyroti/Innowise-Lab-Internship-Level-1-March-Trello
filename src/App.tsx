@@ -11,6 +11,8 @@ import Main from './core/pages/main/Main';
 import setUserInitiate from './core/redux/action-creators/auth/setUserAction';
 import PrivateRoute from './privateRouter';
 
+console.log('Hello World');
+
 const App: React.FC = () => {
   const dispatch = useDispatch();
 
