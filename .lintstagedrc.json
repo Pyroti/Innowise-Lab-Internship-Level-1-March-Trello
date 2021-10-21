@@ -1,0 +1,4 @@
+{
+  "*.{ts,tsx}": ["npm run eslint"],
+  "*.{ts,tsx,html,css,json,md}": ["npx prettier --write ."]
+}

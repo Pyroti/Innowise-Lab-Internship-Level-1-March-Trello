@@ -48,7 +48,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "prepare": "husky install",
-    "eslint": "npx eslint --fix \"./src/**/*.{js,jsx,ts,tsx}\" ",
+    "eslint": "npx eslint --fix \"./src/**/*.{js,jsx,ts,tsx}\" --max-warnings 0",
     "format": "npx prettier --write ./src"
   },
   "eslintConfig": {

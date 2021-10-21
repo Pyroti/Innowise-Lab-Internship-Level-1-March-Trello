@@ -25,14 +25,6 @@ const Cards: React.FC<Props> = (props) => {
   const [cardState, setCardState] = useState({
     cardTitle: ''
   });
-  if (board && board[boardId].cards) {
-    console.log(
-      'result',
-      Object.values(
-        Object.keys(user.boards).map((boardIdd) => board[boardIdd].cards)
-      ).filter((card) => card)
-    );
-  }
 
   const cardsId = () => {
     const allCardsId = Object.values(
@@ -48,7 +40,6 @@ const Cards: React.FC<Props> = (props) => {
 
   //исправить getCardsData
   useEffect(() => {
-    console.log('IN USE EFFECT Board', board, board[boardId].cards);
     if (board && board[boardId].cards) {
       dispatch(getCardsData(cardsId()));
     }
@@ -67,16 +58,9 @@ const Cards: React.FC<Props> = (props) => {
     }
   };
 
-  console.log(board, boardId, board[boardId]);
-
-  if (board[boardId].cards) {
-    console.log(board[boardId].cards);
-  }
-
   const addCard = (boardId: string) => {
     const cardId = uuidv4();
     const order = createOrderNumCard(boardId);
-    console.log('boardId:', boardId);
     dispatch(writeCardData(cardId, order, cardTitle, 'none', card));
     dispatch(writeBoardCardData(boardId, cardId));
     setCardState({ cardTitle: '' });

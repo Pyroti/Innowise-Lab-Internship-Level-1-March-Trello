@@ -45,21 +45,15 @@ const Main: React.FC = () => {
     dispatch(getUserData(currentUser));
   };
 
-  console.log(currentUser);
-
   useEffect(() => {
     dispatch(getUserData(currentUser));
   }, [currentUser, dispatch]);
 
   useEffect(() => {
-    console.log('IN USE EFFECT', user);
     if (user && user.boards) {
       dispatch(getBoardsData(Object.keys(user.boards)));
     }
   }, [dispatch, user]);
-
-  console.log('IN COMPONENT', user);
-  console.log('IN COMPONENT board', board);
 
   const handleChangeBoard = (event: React.ChangeEvent) => {
     const { name, value } = event.target as HTMLInputElement;
@@ -97,22 +91,12 @@ const Main: React.FC = () => {
 
   const dataToRender = Object.values(filterBoards() ?? []);
 
-  console.log('dataToRender', dataToRender);
-  // if (user && user.boards && board.cards) {
-  //   console.log(
-  //     'result',
-  //     Object.keys(user.boards).map((boardId) =>
-  //       Object.keys(board[boardId].cards)
-  //     )
-  //   );
-  // }
   return (
     <>
       <Header />
       <BoardWrap>
         {board &&
           dataToRender.sort(sortBorder).map((boardd) => {
-            console.log('boardd', boardd);
             return (
               boardd && (
                 <Board key={boardd.boardId}>

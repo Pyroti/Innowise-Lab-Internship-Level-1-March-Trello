@@ -60,14 +60,12 @@ const getCardsData = (cardsId: string[]) => {
       cardsId.map((cardId) => get(ref(db, `/cards/${cardId}`)))
     );
     const allcards = cardsData.map((snapshot) => snapshot.val());
-    console.log('allcards', allcards);
     const finalCards = allcards.reduce((acc, card) => {
       if (card?.cardId) {
         acc[card.cardId] = card;
       }
       return acc;
     }, {} as CardState);
-    console.log('finalCards', finalCards);
     dispatch(cardSuccess(finalCards));
   };
 };
