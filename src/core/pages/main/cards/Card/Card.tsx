@@ -50,8 +50,6 @@ const Card: React.FC<CardProps> = (props) => {
     dispatch(getCardsData(cardsId()));
   };
 
-  console.log(card);
-
   const editCard = () => {
     dispatch(editCardData(card.cardId, cardTitle));
     dispatch(getCardsData(cardsId()));

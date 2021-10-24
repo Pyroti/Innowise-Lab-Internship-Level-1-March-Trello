@@ -5,6 +5,7 @@ import Header from '../../components/header/Header';
 import { useTypedSelector } from '../../hooks/useTypeSelector';
 import {
   getBoardsData,
+  updateBoardOrderData,
   writeBoardData
 } from '../../redux/action-creators/boards/boardAction';
 import {
@@ -44,8 +45,6 @@ const Main: React.FC = () => {
   const getCurrentUserData = () => {
     dispatch(getUserData(currentUser));
   };
-
-  console.log(currentUser);
 
   useEffect(() => {
     dispatch(getUserData(currentUser));
@@ -89,6 +88,14 @@ const Main: React.FC = () => {
 
   const dataToRender = Object.values(filterBoards() ?? []);
 
+  const updateBoardsOrder = () => {
+    filterBoards()
+      .sort(sortBorder)
+      .forEach((board, index) => {
+        dispatch(updateBoardOrderData(board.boardId, index + 1));
+      });
+  };
+
   return (
     <>
       <Header />
@@ -98,7 +105,10 @@ const Main: React.FC = () => {
             return (
               board && (
                 <BoardStyled key={boardData.boardId}>
-                  <Board boardData={boardData} />
+                  <Board
+                    boardData={boardData}
+                    updateBoardsOrder={updateBoardsOrder}
+                  />
                   <Cards boardId={boardData.boardId} />
                 </BoardStyled>
               )

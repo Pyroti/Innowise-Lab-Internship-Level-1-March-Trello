@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import colors from '../../../constants/colors';
+import mediaQueries from '../../../constants/mediaQueries';
 import HeaderContentWidth from './HeaderContentWidth';
 
 const HeaderStyled = styled.div`
@@ -12,7 +13,7 @@ const HeaderStyled = styled.div`
   color: ${colors.HeaderStyled_color};
   flex-wrap: wrap;
 
-  @media (max-width: 622px) {
+  @media (${mediaQueries.mediaTablet}) {
     ${HeaderContentWidth}:nth-child(2) {
       display: none;
     }

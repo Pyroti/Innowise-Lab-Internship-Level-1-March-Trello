@@ -25,10 +25,11 @@ import userSelector from '../../../redux/selectors/userSelector';
 
 interface BoardProps {
   boardData: BoardState;
+  updateBoardsOrder: () => void;
 }
 
 const Board: React.FC<BoardProps> = (props) => {
-  const { boardData } = props;
+  const { boardData, updateBoardsOrder } = props;
 
   const { board } = useTypedSelector(boardSelector);
   const { currentUser } = useTypedSelector(authSelector);
@@ -43,13 +44,21 @@ const Board: React.FC<BoardProps> = (props) => {
 
   const cards = useTypedSelector((state) => state.card).card;
 
+  const deleteCardsInBoard = (boardId: string) => {
+    const cardsInBoards = board[boardId].cards;
+    if (cardsInBoards) {
+      const cardsId = Object.keys(cardsInBoards);
+      cardsId.map((cardId) => {
+        dispatch(deleteCardData(cardId, cards));
+      });
+    }
+  };
+
   const deleteBoard = (boardId: string) => {
-    const cardsId = Object.keys(board[boardId].cards);
-    cardsId.map((cardId) => {
-      dispatch(deleteCardData(cardId, cards));
-    });
-    dispatch(deleteBoardData(boardId));
+    deleteCardsInBoard(boardId);
+    dispatch(deleteBoardData(boardId, board));
     dispatch(deleteBoardIdData(currentUser.uid, boardId));
+    updateBoardsOrder();
     dispatch(getUserData(currentUser));
   };
 
@@ -88,6 +97,8 @@ const Board: React.FC<BoardProps> = (props) => {
 
   return (
     <BoardTitle>
+      {boardData.order}
+      {':'}
       {boardData.title}
       <OptionWrap>
         <CreateIcon onClick={isEditBoard} />

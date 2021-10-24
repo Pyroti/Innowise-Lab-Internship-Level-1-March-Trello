@@ -52,7 +52,6 @@ const Cards: React.FC<Props> = (props) => {
   };
 
   const showCards = () => {
-    console.log(card);
     return Object.values(card).filter(
       (element) =>
         Object.keys(board[boardId].cards).indexOf(element.cardId) > -1

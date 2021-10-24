@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import colors from '../../constants/colors';
+import mediaQueries from '../../constants/mediaQueries';
 
 const AuthForm = styled.form`
   position: relative;
@@ -14,7 +15,7 @@ const AuthForm = styled.form`
   padding: 20px;
   box-shadow: 4px 4px 8px 0px ${colors.form_shadow};
   color: ${colors.form_main_color};
-  @media (max-width: 768px) {
+  @media (${mediaQueries.mediaTablet}) {
     width: 350px;
     height: 450px;
   }

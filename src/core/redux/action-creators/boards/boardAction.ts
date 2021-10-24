@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { get, getDatabase, ref, remove, set, update } from 'firebase/database';
 import { Dispatch } from 'redux';
 import {
@@ -72,10 +73,18 @@ const deleteCardIdData = (cardId: string, boardId: string) => {
   };
 };
 
-const deleteBoardData = (boardId: string) => {
-  return (): void => {
+const deleteBoardData = (
+  boardId: string,
+  boards: { [id: string]: BoardState }
+) => {
+  return async (dispatch: Dispatch<BoardAction>): Promise<void> => {
     const db = getDatabase();
     remove(ref(db, `boards/${boardId}`));
+    console.log(boards);
+    console.log(boards[`${boardId}`]);
+    delete boards[`${boardId}`];
+    console.log(boards);
+    dispatch(boardSuccess(boards));
   };
 };
 
@@ -86,10 +95,18 @@ const editBoardData = (boardId: string, boardTitle: string) => {
   };
 };
 
+const updateBoardOrderData = (boardId: string, orderNum: number) => {
+  return (): void => {
+    const db = getDatabase();
+    update(ref(db, `boards/${boardId}`), { order: orderNum });
+  };
+};
+
 export {
   writeBoardData,
   getBoardsData,
   deleteCardIdData,
   deleteBoardData,
-  editBoardData
+  editBoardData,
+  updateBoardOrderData
 };

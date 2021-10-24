@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import colors from '../../../constants/colors';
+import mediaQueries from '../../../constants/mediaQueries';
 
 const CloseModalWrapper = styled.div`
   width: 500px;
@@ -12,11 +13,11 @@ const CloseModalWrapper = styled.div`
   z-index: 100;
   border-radius: 10px;
   padding: 24px;
-  @media (max-width: 768px) {
+  @media (${mediaQueries.mediaTablet}) {
     width: 400px;
     height: 350px;
   }
-  @media (max-width: 400px) {
+  @media (${mediaQueries.mediaMobile}) {
     width: 310px;
     height: 350px;
   }

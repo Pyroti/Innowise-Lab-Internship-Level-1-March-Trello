@@ -60,14 +60,12 @@ const getCardsData = (cardsId: string[]) => {
       cardsId.map((cardId) => get(ref(db, `/cards/${cardId}`)))
     );
     const allcards = cardsData.map((snapshot) => snapshot.val());
-    console.log('allcards', allcards);
     const finalCards = allcards.reduce((acc, card) => {
       if (card?.cardId) {
         acc[card.cardId] = card;
       }
       return acc;
     }, {} as CardState);
-    console.log('finalCards', finalCards);
     dispatch(cardSuccess(finalCards));
   };
 };
@@ -91,7 +89,6 @@ const editCardData = (cardId: string, cardTitle: string) => {
 const updateCardOrderData = (cardId: string, orderNum: number) => {
   return (): void => {
     const db = getDatabase();
-    console.log('ooop', cardId, orderNum);
     update(ref(db, `cards/${cardId}`), { order: orderNum });
   };
 };
