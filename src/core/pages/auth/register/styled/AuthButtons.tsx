@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-// import colors from '../../../../constants/colors';
 
 const AuthButtons = styled.div`
   display: flex;

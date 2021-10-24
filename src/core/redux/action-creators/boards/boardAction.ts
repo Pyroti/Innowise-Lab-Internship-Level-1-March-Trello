@@ -1,4 +1,4 @@
-import { get, getDatabase, ref, set } from 'firebase/database';
+import { get, getDatabase, ref, remove, set, update } from 'firebase/database';
 import { Dispatch } from 'redux';
 import {
   BoardAction,
@@ -65,4 +65,31 @@ const getBoardsData = (boardsId: string[]) => {
   };
 };
 
-export { writeBoardData, getBoardsData };
+const deleteCardIdData = (cardId: string, boardId: string) => {
+  return (): void => {
+    const db = getDatabase();
+    remove(ref(db, `boards/${boardId}/cards/${cardId}`));
+  };
+};
+
+const deleteBoardData = (boardId: string) => {
+  return (): void => {
+    const db = getDatabase();
+    remove(ref(db, `boards/${boardId}`));
+  };
+};
+
+const editBoardData = (boardId: string, boardTitle: string) => {
+  return (): void => {
+    const db = getDatabase();
+    update(ref(db, `boards/${boardId}`), { title: boardTitle });
+  };
+};
+
+export {
+  writeBoardData,
+  getBoardsData,
+  deleteCardIdData,
+  deleteBoardData,
+  editBoardData
+};

@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { useTypedSelector } from '../../../hooks/useTypeSelector';
 import { getBoardsData } from '../../../redux/action-creators/boards/boardAction';
 import {
   getCardsData,
+  updateCardOrderData,
   writeBoardCardData,
   writeCardData
 } from '../../../redux/action-creators/cards/cardAction';
@@ -12,6 +13,7 @@ import boardSelector from '../../../redux/selectors/boardSelector';
 import userSelector from '../../../redux/selectors/userSelector';
 import { CardState } from '../../../redux/types/cards/cardTypes';
 import AddBoard from '../AddBoard/AddBoard';
+import Card from './Card/Card';
 
 interface Props {
   boardId: string;
@@ -25,69 +27,53 @@ const Cards: React.FC<Props> = (props) => {
   const [cardState, setCardState] = useState({
     cardTitle: ''
   });
-  if (board && board[boardId].cards) {
-    console.log(
-      'result',
-      Object.values(
-        Object.keys(user.boards).map((boardIdd) => board[boardIdd].cards)
-      ).filter((card) => card)
-    );
-  }
 
-  const cardsId = () => {
+  const { cardTitle } = cardState;
+
+  const cardsId = useCallback(() => {
     const allCardsId = Object.values(
       Object.keys(user.boards).map((boardIdd) => board[boardIdd].cards)
     ).filter((card) => card);
     const finalCardsId = Object.assign({}, ...allCardsId);
     return Object.keys(finalCardsId);
-  };
-
-  const { cardTitle } = cardState;
+  }, [board, user.boards]);
 
   const dispatch = useDispatch();
 
-  //исправить getCardsData
   useEffect(() => {
-    console.log('IN USE EFFECT Board', board, board[boardId].cards);
     if (board && board[boardId].cards) {
       dispatch(getCardsData(cardsId()));
     }
-  }, [dispatch, board, boardId]);
+  }, [dispatch, board, boardId, cardsId]);
 
   const handleChangeCard = (event: React.ChangeEvent) => {
     const { name, value } = event.target as HTMLInputElement;
     setCardState((prevState) => ({ ...prevState, [name]: value }));
   };
 
+  const showCards = () => {
+    console.log(card);
+    return Object.values(card).filter(
+      (element) =>
+        Object.keys(board[boardId].cards).indexOf(element.cardId) > -1
+    );
+  };
+
   const createOrderNumCard = (currentBoardId: string) => {
     if (board[currentBoardId].cards) {
-      return Object.keys(board[currentBoardId].cards).length + 1;
+      return showCards().length + 1;
     } else {
       return 1;
     }
   };
 
-  console.log(board, boardId, board[boardId]);
-
-  if (board[boardId].cards) {
-    console.log(board[boardId].cards);
-  }
-
   const addCard = (boardId: string) => {
     const cardId = uuidv4();
     const order = createOrderNumCard(boardId);
-    console.log('boardId:', boardId);
     dispatch(writeCardData(cardId, order, cardTitle, 'none', card));
     dispatch(writeBoardCardData(boardId, cardId));
     setCardState({ cardTitle: '' });
     dispatch(getBoardsData(Object.keys(user.boards)));
-  };
-
-  const showCards = () => {
-    return Object.values(card).filter(
-      (element) =>
-        Object.keys(board[boardId].cards).indexOf(element.cardId) > -1
-    );
   };
 
   const sortCard = (a: CardState, b: CardState) => {
@@ -98,13 +84,31 @@ const Cards: React.FC<Props> = (props) => {
     }
   };
 
+  const updateCardsOrder = () => {
+    showCards()
+      .sort(sortCard)
+      .forEach((card, index) => {
+        dispatch(updateCardOrderData(card.cardId, index + 1));
+      });
+  };
+
   return (
     <>
-      {card &&
-        board[boardId].cards &&
-        showCards()
-          .sort(sortCard)
-          .map((card) => <div key={card.cardId}>{card.title}</div>)}
+      <div>
+        {card &&
+          board[boardId].cards &&
+          showCards()
+            .sort(sortCard)
+            .map((card) => (
+              <Card
+                key={card.cardId}
+                cardsId={cardsId}
+                boardId={boardId}
+                card={card}
+                updateCardsOrder={updateCardsOrder}
+              ></Card>
+            ))}
+      </div>
       <AddBoard
         title={cardTitle}
         name="cardTitle"

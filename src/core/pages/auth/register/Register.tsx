@@ -45,7 +45,7 @@ const Register: React.FC = () => {
         passwordConfirm: ''
       });
     }
-  }, [currentUser]);
+  }, [currentUser, dispatch, displayName, email]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -59,11 +59,14 @@ const Register: React.FC = () => {
     setState((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const callbackRef = useCallback((inputElement) => {
-    if (email && password && inputElement) {
-      inputElement.focus();
-    }
-  }, []);
+  const callbackRef = useCallback(
+    (inputElement) => {
+      if (email && password && inputElement) {
+        inputElement.focus();
+      }
+    },
+    [email, password]
+  );
 
   return (
     <AuthContent>

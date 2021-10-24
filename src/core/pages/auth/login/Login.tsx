@@ -54,11 +54,14 @@ const Login: React.FC = () => {
     setState((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const callbackRef = useCallback((inputElement) => {
-    if (email && password && inputElement) {
-      inputElement.focus();
-    }
-  }, []);
+  const callbackRef = useCallback(
+    (inputElement) => {
+      if (email && password && inputElement) {
+        inputElement.focus();
+      }
+    },
+    [email, password]
+  );
 
   return (
     <AuthContent>

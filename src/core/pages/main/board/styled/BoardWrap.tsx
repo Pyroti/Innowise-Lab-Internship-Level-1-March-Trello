@@ -1,18 +1,16 @@
 import styled from 'styled-components';
 import colors from '../../../../constants/colors';
 
-const AddBoardWrap = styled.div`
+const BoardWrap = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   position: relative;
-  width: 300px;
-  width: 265px;
-  height: 110px;
-  margin-top: 10px;
+  justify-items: center;
+  height: 100%;
+  min-height: 88vh;
   padding: 10px;
+  margin: 10px;
   border-radius: 10px;
   border: 2px ${colors.form_main_color} solid;
 `;
 
-export default AddBoardWrap;
+export default BoardWrap;

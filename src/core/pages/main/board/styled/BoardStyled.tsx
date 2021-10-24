@@ -1,12 +1,12 @@
 import styled from 'styled-components';
-import colors from '../../../constants/colors';
+import colors from '../../../../constants/colors';
 
-const Board = styled.div`
+const BoardStyled = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-  width: 325px;
+  width: 290px;
   height: 100%;
   margin: 10px;
   padding: 10px;
@@ -14,4 +14,4 @@ const Board = styled.div`
   border: 2px ${colors.form_main_color} solid;
 `;
 
-export default Board;
+export default BoardStyled;

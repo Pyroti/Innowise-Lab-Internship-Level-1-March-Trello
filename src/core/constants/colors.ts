@@ -8,6 +8,9 @@ enum colors {
   loaderBorder = '#f3f3f3',
   loaderBorderTop = '#3498db',
   without_color = 'transparent',
+  defaultBlackColor = '#000',
+
+  AddBoardButton_color = '#1967ff',
 
   HeaderStyled_background = '#82abfb',
   HeaderStyled_color = '#fff',

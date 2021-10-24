@@ -1,5 +1,5 @@
 import firebase from 'firebase/compat/app';
-import { get, getDatabase, ref, set } from 'firebase/database';
+import { get, getDatabase, ref, remove, set } from 'firebase/database';
 import { Dispatch } from 'redux';
 import {
   UserAction,
@@ -33,7 +33,7 @@ const writeUserData = (userId: string, username: string, email: string) => {
       }
     };
     const db = getDatabase();
-    set(ref(db, 'users/' + userId), {
+    set(ref(db, `users/${userId}`), {
       userId: userId,
       username: username,
       email: email
@@ -60,7 +60,7 @@ const getUserData = (currentUser: firebase.User | null) => {
   return async (dispatch: Dispatch<UserAction>): Promise<void> => {
     dispatch(userStart());
     const db = getDatabase();
-    const userCountRef = ref(db, 'users/' + currentUser?.uid);
+    const userCountRef = ref(db, `users/${currentUser?.uid}`);
     get(userCountRef)
       .then((snapshot) => {
         if (snapshot.exists()) {
@@ -75,4 +75,11 @@ const getUserData = (currentUser: firebase.User | null) => {
   };
 };
 
-export { writeUserData, getUserData, writeUserBoardData };
+const deleteBoardIdData = (userId: string, boardId: string) => {
+  return (): void => {
+    const db = getDatabase();
+    remove(ref(db, `users/${userId}/boards/${boardId}`));
+  };
+};
+
+export { writeUserData, getUserData, writeUserBoardData, deleteBoardIdData };

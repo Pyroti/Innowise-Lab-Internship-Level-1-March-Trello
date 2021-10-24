@@ -1,4 +1,4 @@
-import { get, getDatabase, ref, set } from 'firebase/database';
+import { get, getDatabase, ref, remove, set, update } from 'firebase/database';
 import { Dispatch } from 'redux';
 import {
   CardAction,
@@ -10,9 +10,9 @@ const cardStart = (): CardAction => ({
   type: CardActionTypes.CARD_START
 });
 
-const cardSuccess = (user: { [id: string]: CardState }): CardAction => ({
+const cardSuccess = (card: { [id: string]: CardState }): CardAction => ({
   type: CardActionTypes.CARD_SUCCSES,
-  payload: user
+  payload: card
 });
 
 const cardFail = (error: string): CardAction => ({
@@ -31,7 +31,7 @@ const writeCardData = (
     const card = { cardId, order, title, textContent };
     dispatch(cardStart());
     const db = getDatabase();
-    set(ref(db, 'cards/' + cardId), {
+    set(ref(db, `cards/${cardId}`), {
       cardId: cardId,
       order: order,
       title: title,
@@ -72,4 +72,35 @@ const getCardsData = (cardsId: string[]) => {
   };
 };
 
-export { writeCardData, getCardsData, writeBoardCardData };
+const deleteCardData = (cardId: string, cards: { [id: string]: CardState }) => {
+  return async (dispatch: Dispatch<CardAction>): Promise<void> => {
+    const db = getDatabase();
+    remove(ref(db, `cards/${cardId}`));
+    delete cards[`${cardId}`];
+    dispatch(cardSuccess(cards));
+  };
+};
+
+const editCardData = (cardId: string, cardTitle: string) => {
+  return (): void => {
+    const db = getDatabase();
+    update(ref(db, `cards/${cardId}`), { title: cardTitle });
+  };
+};
+
+const updateCardOrderData = (cardId: string, orderNum: number) => {
+  return (): void => {
+    const db = getDatabase();
+    console.log('ooop', cardId, orderNum);
+    update(ref(db, `cards/${cardId}`), { order: orderNum });
+  };
+};
+
+export {
+  writeCardData,
+  getCardsData,
+  writeBoardCardData,
+  deleteCardData,
+  editCardData,
+  updateCardOrderData
+};
