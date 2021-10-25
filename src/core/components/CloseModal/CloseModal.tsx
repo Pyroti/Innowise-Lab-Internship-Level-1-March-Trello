@@ -72,7 +72,7 @@ const CloseModal: React.FC<Props> = (props: Props) => {
         <CloseModalBackground onClick={closeModal} ref={modalRef}>
           <CloseModalWrapper>
             <CloseModalContent>
-              <h1>{t('AreYouSureYouWantToLogOut')}</h1>
+              <h1>{t('areYouSureYouWantToLogOut')}</h1>
               <Link to={MainRouters.login}>
                 <ExitButton type="button" onClick={closeTheGame}>
                   {t('exit')}

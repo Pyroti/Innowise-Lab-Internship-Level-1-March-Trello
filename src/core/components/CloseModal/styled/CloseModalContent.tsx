@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import color from '../../../constants/colors';
+import Color from '../../../constants/colors';
 
 const CloseModalContent = styled.div`
   display: flex;
@@ -8,7 +8,7 @@ const CloseModalContent = styled.div`
   align-items: center;
   line-height: 1.8;
   height: 100%;
-  color: ${color.CloseModalContent_color};
+  color: ${Color.closeModalContentColor};
 `;
 
 export default CloseModalContent;

@@ -15,16 +15,17 @@ import Input from '@mui/material/Input';
 import CloseIcon from '@material-ui/icons/Close';
 import CheckIcon from '@mui/icons-material/Check';
 import { useTypedSelector } from '../../../../hooks/useTypeSelector';
+import cardSelector from '../../../../redux/selectors/cardSelector';
 
 interface CardProps {
   card: CardState;
   boardId: string;
   cardsId: () => string[];
-  updateCardsOrder: () => void;
+  updateCardsOrder: (boardsId: string) => void;
 }
 
 const Card: React.FC<CardProps> = (props) => {
-  const cards = useTypedSelector((state) => state.card).card;
+  const cards = useTypedSelector(cardSelector).card;
   const { card, boardId, cardsId, updateCardsOrder } = props;
   const [isEditing, setIsEditing] = useState(false);
   const [cardState, setCardtate] = useState({
@@ -45,7 +46,7 @@ const Card: React.FC<CardProps> = (props) => {
 
   const deleteCard = () => {
     dispatch(deleteCardData(card.cardId, cards));
-    updateCardsOrder();
+    updateCardsOrder(boardId);
     dispatch(deleteCardIdData(card.cardId, boardId));
     dispatch(getCardsData(cardsId()));
   };

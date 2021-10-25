@@ -13,8 +13,8 @@ import { SetUserActionType, SetUserTypes } from '../types/auth/setUserTypes';
 
 export interface AuthState {
   loading: boolean;
-  currentUser: firebase.User | null;
-  error: firebase.User | string | null;
+  currentUser: firebase.User;
+  error: firebase.User | string;
 }
 
 const initialState: AuthState = {

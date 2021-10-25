@@ -1,29 +1,29 @@
-enum colors {
+enum Сolors {
   wrapper = 'linear-gradient(45deg, #EEE4EA, #E4E8F9)',
-  form_background = '#fff',
-  form_shadow = 'rgba(34, 60, 80, 0.42)',
-  form_main_color = '#8298f9',
-  form_main_focus_color = '#7854ff',
-  form_default_color = '#fff',
+  formBackground = '#fff',
+  formShadow = 'rgba(34, 60, 80, 0.42)',
+  formMainColor = '#8298f9',
+  formMainFocusColor = '#7854ff',
+  formDefaultColor = '#fff',
   loaderBorder = '#f3f3f3',
   loaderBorderTop = '#3498db',
-  without_color = 'transparent',
+  withoutColor = 'transparent',
   defaultBlackColor = '#000',
 
-  AddBoardButton_color = '#1967ff',
+  addBoardButtonColor = '#1967ff',
 
-  HeaderStyled_background = '#82abfb',
-  HeaderStyled_color = '#fff',
+  headerStyledBackground = '#82abfb',
+  headerStyledColor = '#fff',
 
-  CloseModalWrapper_background = '#fff',
-  CloseModalWrapper_color = '#000',
+  closeModalWrapperBackground = '#fff',
+  closeModalWrapperColor = '#000',
 
-  CloseModalContent_color = '#141414',
-  CloseModalContent_button_background = '#141414',
-  CloseModalContent_button_color = '#fff',
+  closeModalContentColor = '#141414',
+  closeModalContentButtonBackground = '#141414',
+  closeModalContentButtonColor = '#fff',
 
-  HeaderButtonStyled_color = '#fff',
-  CloseModalBackground_background = 'rgba(0,0,0,0.8)'
+  headerButtonStyledColor = '#fff',
+  closeModalBackgroundBackground = 'rgba(0,0,0,0.8)'
 }
 
-export default colors;
+export default Сolors;

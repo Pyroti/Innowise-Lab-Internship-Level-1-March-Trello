@@ -10,7 +10,7 @@ const BoardWrap = styled.div`
   padding: 10px;
   margin: 10px;
   border-radius: 10px;
-  border: 2px ${colors.form_main_color} solid;
+  border: 2px ${colors.formMainColor} solid;
 `;
 
 export default BoardWrap;

@@ -23,23 +23,28 @@ const userFail = (error: string): UserAction => ({
 
 const writeUserData = (userId: string, username: string, email: string) => {
   return async (dispatch: Dispatch<UserAction>): Promise<void> => {
-    dispatch(userStart());
-    const user = {
-      userId,
-      username,
-      email,
-      boards: {
-        key: { boardId: '' }
-      }
-    };
-    const db = getDatabase();
-    set(ref(db, `users/${userId}`), {
-      userId: userId,
-      username: username,
-      email: email
-    })
-      .then(() => dispatch(userSuccess(user)))
-      .catch((error: Error) => dispatch(userFail(error.message)));
+    try {
+      dispatch(userStart());
+      const user = {
+        userId,
+        username,
+        email,
+        boards: {
+          key: { boardId: '' }
+        }
+      };
+      const db = getDatabase();
+      const usersRef = `users/${userId}`;
+      await set(ref(db, usersRef), {
+        userId: userId,
+        username: username,
+        email: email
+      });
+      dispatch(userSuccess(user));
+    } catch (error) {
+      const err = (error as Error).message;
+      dispatch(userFail(err));
+    }
   };
 };
 
@@ -47,38 +52,50 @@ const writeUserBoardData = (
   currentUser: firebase.User | null,
   boardId: string
 ) => {
-  return async (): Promise<void> => {
-    const db = getDatabase();
-    const usersRef = ref(db, `users/${currentUser?.uid}/boards/${boardId}`);
-    set(usersRef, {
-      boardId: boardId
-    });
+  return async (dispatch: Dispatch<UserAction>): Promise<void> => {
+    try {
+      const db = getDatabase();
+      const usersBoardsRef = `users/${currentUser?.uid}/boards/${boardId}`;
+      const usersRef = ref(db, usersBoardsRef);
+      await set(usersRef, {
+        boardId: boardId
+      });
+    } catch (error) {
+      const err = (error as Error).message;
+      dispatch(userFail(err));
+    }
   };
 };
 
 const getUserData = (currentUser: firebase.User | null) => {
   return async (dispatch: Dispatch<UserAction>): Promise<void> => {
-    dispatch(userStart());
-    const db = getDatabase();
-    const userCountRef = ref(db, `users/${currentUser?.uid}`);
-    get(userCountRef)
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          dispatch(userSuccess(data));
-        }
-      })
-      .catch((error) => {
-        const err = (error as Error).message;
-        dispatch(userFail(err));
-      });
+    try {
+      dispatch(userStart());
+      const db = getDatabase();
+      const usersRef = `users/${currentUser?.uid}`;
+      const userCountRef = ref(db, usersRef);
+      const snapshot = await get(userCountRef);
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        dispatch(userSuccess(data));
+      }
+    } catch (error) {
+      const err = (error as Error).message;
+      dispatch(userFail(err));
+    }
   };
 };
 
 const deleteBoardIdData = (userId: string, boardId: string) => {
-  return (): void => {
-    const db = getDatabase();
-    remove(ref(db, `users/${userId}/boards/${boardId}`));
+  return async (dispatch: Dispatch<UserAction>): Promise<void> => {
+    try {
+      const db = getDatabase();
+      const usersBoardsRef = `users/${userId}/boards/${boardId}`;
+      await remove(ref(db, usersBoardsRef));
+    } catch (error) {
+      const err = (error as Error).message;
+      dispatch(userFail(err));
+    }
   };
 };
 

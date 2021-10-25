@@ -4,7 +4,7 @@ import {
   CardState
 } from '../types/cards/cardTypes';
 
-export interface InitBoardState {
+export interface InitCardState {
   card: {
     [id: string]: CardState;
   };
@@ -12,7 +12,7 @@ export interface InitBoardState {
   error: string;
 }
 
-const initialState: InitBoardState = {
+const initialState: InitCardState = {
   card: null,
   isLoading: false,
   error: null
@@ -21,7 +21,7 @@ const initialState: InitBoardState = {
 const userReducer = (
   state = initialState,
   action: CardAction
-): InitBoardState => {
+): InitCardState => {
   switch (action.type) {
     case CardActionTypes.CARD_START:
       return {

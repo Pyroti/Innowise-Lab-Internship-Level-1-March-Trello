@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Header from '../../components/header/Header';
 import { useTypedSelector } from '../../hooks/useTypeSelector';
 import {
+  deleteCardIdData,
   getBoardsData,
   updateBoardOrderData,
   writeBoardData
@@ -21,11 +22,20 @@ import Cards from './cards/Cards';
 import Board from './board/Board';
 import BoardWrap from './styled/BoardWrap';
 import BoardStyled from './board/styled/BoardStyled';
+import {
+  deleteCardData,
+  writeBoardCardData,
+  writeCardData
+} from '../../redux/action-creators/cards/cardAction';
+import cardSelector from '../../redux/selectors/cardSelector';
+
+const boardNameId = 'board';
 
 const Main: React.FC = () => {
   const { currentUser } = useTypedSelector(authSelector);
   const { user } = useTypedSelector(userSelector);
   const { board } = useTypedSelector(boardSelector);
+  const { card } = useTypedSelector(cardSelector);
 
   const filterBoards = () => {
     return Object.keys(user?.boards ?? {})
@@ -41,6 +51,12 @@ const Main: React.FC = () => {
     boardTitle: ''
   });
   const { boardTitle } = boardState;
+  const [currentItemNameId, setCurrentItemNameId] = useState(null);
+  const [currentBoard, setCurrentBoard] = useState(null);
+
+  const [currentBordIdcard, setCurrentBordIdcard] = useState(null);
+  const [currentCard, setCurrentCard] = useState(null);
+  const [isUpdateCards, setIsUpdateCards] = useState(false);
 
   const getCurrentUserData = () => {
     dispatch(getUserData(currentUser));
@@ -96,6 +112,59 @@ const Main: React.FC = () => {
       });
   };
 
+  const dragStartHandler = (
+    event: React.DragEvent<HTMLDivElement>,
+    boardData: BoardState
+  ) => {
+    const elemName = (event.target as Element).id;
+    setCurrentItemNameId(elemName);
+    setCurrentBoard(boardData);
+  };
+
+  const dragOverHandler = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+
+  const dropHandler = (
+    event: React.DragEvent<HTMLDivElement>,
+    boardData: BoardState
+  ) => {
+    event.preventDefault();
+    const isBoard = currentItemNameId === boardNameId;
+    if (isBoard) {
+      filterBoards().map((board) => {
+        const isCurrentBoard = board.boardId === currentBoard.boardId;
+
+        const isFirstBoard =
+          board.order <= boardData.order &&
+          board.order > currentBoard.order &&
+          currentBoard.order < boardData.order;
+
+        const isLastBoard =
+          board.order >= boardData.order &&
+          board.order < currentBoard.order &&
+          currentBoard.order > boardData.order;
+
+        if (isCurrentBoard) {
+          dispatch(updateBoardOrderData(board.boardId, boardData.order));
+        } else if (isFirstBoard) {
+          dispatch(updateBoardOrderData(board.boardId, board.order - 1));
+        } else if (isLastBoard) {
+          dispatch(updateBoardOrderData(board.boardId, board.order + 1));
+        }
+      });
+    } else if (!boardData.cards) {
+      dispatch(deleteCardData(currentCard.cardId, card));
+      dispatch(deleteCardIdData(currentCard.cardId, currentBordIdcard));
+      setIsUpdateCards(true);
+      dispatch(
+        writeCardData(currentCard.cardId, 1, currentCard.title, 'none', card)
+      );
+      dispatch(writeBoardCardData(boardData.boardId, currentCard.cardId));
+    }
+    getCurrentUserData();
+  };
+
   return (
     <>
       <Header />
@@ -104,12 +173,29 @@ const Main: React.FC = () => {
           dataToRender.sort(sortBorder).map((boardData) => {
             return (
               board && (
-                <BoardStyled key={boardData.boardId}>
+                <BoardStyled
+                  key={boardData.boardId}
+                  id="board"
+                  onDragStart={(event) => dragStartHandler(event, boardData)}
+                  onDragOver={(event) => dragOverHandler(event)}
+                  onDrop={(event) => dropHandler(event, boardData)}
+                  draggable={true}
+                >
                   <Board
                     boardData={boardData}
                     updateBoardsOrder={updateBoardsOrder}
                   />
-                  <Cards boardId={boardData.boardId} />
+                  <Cards
+                    boardId={boardData.boardId}
+                    currentCard={currentCard}
+                    setCurrentCard={setCurrentCard}
+                    currentBordIdcard={currentBordIdcard}
+                    setCurrentBordIdcard={setCurrentBordIdcard}
+                    currentItemNameId={currentItemNameId}
+                    setCurrentItemNameId={setCurrentItemNameId}
+                    isUpdateCards={isUpdateCards}
+                    setIsUpdateCards={setIsUpdateCards}
+                  />
                 </BoardStyled>
               )
             );

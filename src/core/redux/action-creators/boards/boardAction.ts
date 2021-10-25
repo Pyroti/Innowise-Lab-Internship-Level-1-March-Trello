@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { get, getDatabase, ref, remove, set, update } from 'firebase/database';
 import { Dispatch } from 'redux';
 import {
@@ -28,48 +27,64 @@ const writeBoardData = (
   boards: { [id: string]: BoardState }
 ) => {
   return async (dispatch: Dispatch<BoardAction>): Promise<void> => {
-    const board = {
-      boardId,
-      order,
-      title,
-      cards: {
-        key: { cardId: '' }
-      }
-    };
-    dispatch(boardStart());
-    const db = getDatabase();
-    set(ref(db, `boards/${boardId}`), {
-      boardId: boardId,
-      order: order,
-      title: title
-    })
-      .then(() => dispatch(boardSuccess({ ...boards, [boardId]: board })))
-      .catch((error: Error) => dispatch(boardFail(error.message)));
+    try {
+      const board = {
+        boardId,
+        order,
+        title,
+        cards: {
+          key: { cardId: '' }
+        }
+      };
+      dispatch(boardStart());
+      const db = getDatabase();
+      const boardsRef = `boards/${boardId}`;
+      set(ref(db, boardsRef), {
+        boardId: boardId,
+        order: order,
+        title: title
+      });
+      dispatch(boardSuccess({ ...boards, [boardId]: board }));
+    } catch (error) {
+      const err = (error as Error).message;
+      dispatch(boardFail(err));
+    }
   };
 };
 
 const getBoardsData = (boardsId: string[]) => {
   return async (dispatch: Dispatch<BoardAction>): Promise<void> => {
-    dispatch(boardStart());
-    const db = getDatabase();
-    const boardsData = await Promise.all(
-      boardsId.map((boardId) => get(ref(db, `/boards/${boardId}`)))
-    );
-    const allBoards = boardsData.map((snapshot) => snapshot.val());
-    const finalBoards = allBoards.reduce((acc, board) => {
-      if (board?.boardId) {
-        acc[board.boardId] = board;
-      }
-      return acc;
-    }, {} as BoardState);
-    dispatch(boardSuccess(finalBoards));
+    try {
+      dispatch(boardStart());
+      const db = getDatabase();
+      const boardsData = await Promise.all(
+        boardsId.map((boardId) => get(ref(db, `/boards/${boardId}`)))
+      );
+      const allBoards = boardsData.map((snapshot) => snapshot.val());
+      const finalBoards = allBoards.reduce((acc, board) => {
+        if (board?.boardId) {
+          acc[board.boardId] = board;
+        }
+        return acc;
+      }, {} as BoardState);
+      dispatch(boardSuccess(finalBoards));
+    } catch (error) {
+      const err = (error as Error).message;
+      dispatch(boardFail(err));
+    }
   };
 };
 
 const deleteCardIdData = (cardId: string, boardId: string) => {
-  return (): void => {
-    const db = getDatabase();
-    remove(ref(db, `boards/${boardId}/cards/${cardId}`));
+  return async (dispatch: Dispatch<BoardAction>): Promise<void> => {
+    try {
+      const db = getDatabase();
+      const boardCardIdRef = `boards/${boardId}/cards/${cardId}`;
+      await remove(ref(db, boardCardIdRef));
+    } catch (error) {
+      const err = (error as Error).message;
+      dispatch(boardFail(err));
+    }
   };
 };
 
@@ -78,27 +93,43 @@ const deleteBoardData = (
   boards: { [id: string]: BoardState }
 ) => {
   return async (dispatch: Dispatch<BoardAction>): Promise<void> => {
-    const db = getDatabase();
-    remove(ref(db, `boards/${boardId}`));
-    console.log(boards);
-    console.log(boards[`${boardId}`]);
-    delete boards[`${boardId}`];
-    console.log(boards);
-    dispatch(boardSuccess(boards));
+    try {
+      dispatch(boardStart());
+      const db = getDatabase();
+      const boardsRef = `boards/${boardId}`;
+      await remove(ref(db, boardsRef));
+      delete boards[`${boardId}`];
+      dispatch(boardSuccess(boards));
+    } catch (error) {
+      const err = (error as Error).message;
+      dispatch(boardFail(err));
+    }
   };
 };
 
 const editBoardData = (boardId: string, boardTitle: string) => {
-  return (): void => {
-    const db = getDatabase();
-    update(ref(db, `boards/${boardId}`), { title: boardTitle });
+  return async (dispatch: Dispatch<BoardAction>): Promise<void> => {
+    try {
+      const db = getDatabase();
+      const boardsRef = `boards/${boardId}`;
+      await update(ref(db, boardsRef), { title: boardTitle });
+    } catch (error) {
+      const err = (error as Error).message;
+      dispatch(boardFail(err));
+    }
   };
 };
 
 const updateBoardOrderData = (boardId: string, orderNum: number) => {
-  return (): void => {
-    const db = getDatabase();
-    update(ref(db, `boards/${boardId}`), { order: orderNum });
+  return async (dispatch: Dispatch<BoardAction>): Promise<void> => {
+    try {
+      const db = getDatabase();
+      const boardsRef = `boards/${boardId}`;
+      await update(ref(db, boardsRef), { order: orderNum });
+    } catch (error) {
+      const err = (error as Error).message;
+      dispatch(boardFail(err));
+    }
   };
 };
 

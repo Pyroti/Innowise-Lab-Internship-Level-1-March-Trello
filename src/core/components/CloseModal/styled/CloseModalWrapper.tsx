@@ -1,13 +1,13 @@
 import styled from 'styled-components';
-import colors from '../../../constants/colors';
+import Colors from '../../../constants/colors';
 import mediaQueries from '../../../constants/mediaQueries';
 
 const CloseModalWrapper = styled.div`
   width: 500px;
   height: 400px;
-  box-shadow: 0 5px 16px ${colors.form_shadow};
-  background: ${colors.CloseModalWrapper_background};
-  color: ${colors.CloseModalWrapper_color};
+  box-shadow: 0 5px 16px ${Colors.formShadow};
+  background: ${Colors.closeModalWrapperBackground};
+  color: ${Colors.closeModalWrapperColor};
   display: grid;
   position: relative;
   z-index: 100;

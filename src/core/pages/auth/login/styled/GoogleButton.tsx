@@ -1,10 +1,10 @@
 import styled from 'styled-components';
-import colors from '../../../../constants/colors';
+import Colors from '../../../../constants/colors';
 
 const GoogleButton = styled.button`
   outline: none;
   border: 0;
-  background: ${colors.without_color};
+  background: ${Colors.withoutColor};
   margin: 20px 0;
   &:hover {
     cursor: pointer;

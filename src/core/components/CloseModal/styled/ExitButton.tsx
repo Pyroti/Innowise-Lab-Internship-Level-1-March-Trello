@@ -6,13 +6,13 @@ const ExitButton = styled.button`
   height: 40px;
   border-radius: 10px;
   margin-top: 40px;
-  background-color: ${colors.form_main_color};
+  background-color: ${colors.formMainColor};
   outline: none;
   border: 0;
   cursor: pointer;
-  color: ${colors.form_default_color};
+  color: ${colors.formDefaultColor};
   &:hover {
-    background-color: ${colors.form_main_focus_color};
+    background-color: ${colors.formMainFocusColor};
   }
 `;
 

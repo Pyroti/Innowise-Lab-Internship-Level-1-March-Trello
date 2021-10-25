@@ -15,7 +15,7 @@ const App: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    auth.onAuthStateChanged((authUser: firebase.User | null) => {
+    auth.onAuthStateChanged((authUser: firebase.User) => {
       if (authUser) {
         dispatch(setUserInitiate(authUser));
       } else {

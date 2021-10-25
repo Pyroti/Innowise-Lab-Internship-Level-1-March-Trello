@@ -28,68 +28,102 @@ const writeCardData = (
   cards: { [id: string]: CardState }
 ) => {
   return async (dispatch: Dispatch<CardAction>): Promise<void> => {
-    const card = { cardId, order, title, textContent };
-    dispatch(cardStart());
-    const db = getDatabase();
-    set(ref(db, `cards/${cardId}`), {
-      cardId: cardId,
-      order: order,
-      title: title,
-      textContent: textContent
-    })
-      .then(() => dispatch(cardSuccess({ ...cards, [cardId]: card })))
-      .catch((error: Error) => dispatch(cardFail(error.message)));
+    try {
+      const card = { cardId, order, title, textContent };
+      dispatch(cardStart());
+      const db = getDatabase();
+      const cardsIdRef = `cards/${cardId}`;
+      await set(ref(db, cardsIdRef), {
+        cardId: cardId,
+        order: order,
+        title: title,
+        textContent: textContent
+      });
+      dispatch(cardSuccess({ ...cards, [cardId]: card }));
+    } catch (error) {
+      const err = (error as Error).message;
+      dispatch(cardFail(err));
+    }
   };
 };
 
 const writeBoardCardData = (boardId: string, cardId: string) => {
-  return async (): Promise<void> => {
-    const db = getDatabase();
-    const usersRef = ref(db, `boards/${boardId}/cards/${cardId}`);
-    set(usersRef, {
-      cardId: cardId
-    });
+  return async (dispatch: Dispatch<CardAction>): Promise<void> => {
+    try {
+      const db = getDatabase();
+      const boardCardIdRef = `boards/${boardId}/cards/${cardId}`;
+      const usersRef = ref(db, boardCardIdRef);
+      await set(usersRef, {
+        cardId: cardId
+      });
+    } catch (error) {
+      const err = (error as Error).message;
+      dispatch(cardFail(err));
+    }
   };
 };
 
 const getCardsData = (cardsId: string[]) => {
   return async (dispatch: Dispatch<CardAction>): Promise<void> => {
-    dispatch(cardStart());
-    const db = getDatabase();
-    const cardsData = await Promise.all(
-      cardsId.map((cardId) => get(ref(db, `/cards/${cardId}`)))
-    );
-    const allcards = cardsData.map((snapshot) => snapshot.val());
-    const finalCards = allcards.reduce((acc, card) => {
-      if (card?.cardId) {
-        acc[card.cardId] = card;
-      }
-      return acc;
-    }, {} as CardState);
-    dispatch(cardSuccess(finalCards));
+    try {
+      dispatch(cardStart());
+      const db = getDatabase();
+      const cardsData = await Promise.all(
+        cardsId.map((cardId) => get(ref(db, `/cards/${cardId}`)))
+      );
+      const allcards = cardsData.map((snapshot) => snapshot.val());
+      const finalCards = allcards.reduce((acc, card) => {
+        if (card?.cardId) {
+          acc[card.cardId] = card;
+        }
+        return acc;
+      }, {} as CardState);
+      dispatch(cardSuccess(finalCards));
+    } catch (error) {
+      const err = (error as Error).message;
+      dispatch(cardFail(err));
+    }
   };
 };
 
 const deleteCardData = (cardId: string, cards: { [id: string]: CardState }) => {
   return async (dispatch: Dispatch<CardAction>): Promise<void> => {
-    const db = getDatabase();
-    remove(ref(db, `cards/${cardId}`));
-    delete cards[`${cardId}`];
-    dispatch(cardSuccess(cards));
+    try {
+      const db = getDatabase();
+      const cardsIdRef = `cards/${cardId}`;
+      await remove(ref(db, cardsIdRef));
+      delete cards[`${cardId}`];
+      dispatch(cardSuccess(cards));
+    } catch (error) {
+      const err = (error as Error).message;
+      dispatch(cardFail(err));
+    }
   };
 };
 
 const editCardData = (cardId: string, cardTitle: string) => {
-  return (): void => {
-    const db = getDatabase();
-    update(ref(db, `cards/${cardId}`), { title: cardTitle });
+  return async (dispatch: Dispatch<CardAction>): Promise<void> => {
+    try {
+      const db = getDatabase();
+      const cardsIdRef = `cards/${cardId}`;
+      await update(ref(db, cardsIdRef), { title: cardTitle });
+    } catch (error) {
+      const err = (error as Error).message;
+      dispatch(cardFail(err));
+    }
   };
 };
 
 const updateCardOrderData = (cardId: string, orderNum: number) => {
-  return (): void => {
-    const db = getDatabase();
-    update(ref(db, `cards/${cardId}`), { order: orderNum });
+  return async (dispatch: Dispatch<CardAction>): Promise<void> => {
+    try {
+      const db = getDatabase();
+      const cardsIdRef = `cards/${cardId}`;
+      await update(ref(db, cardsIdRef), { order: orderNum });
+    } catch (error) {
+      const err = (error as Error).message;
+      dispatch(cardFail(err));
+    }
   };
 };
 

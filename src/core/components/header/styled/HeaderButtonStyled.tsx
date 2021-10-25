@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import colors from '../../../constants/colors';
+import Colors from '../../../constants/colors';
 
 const HeaderButtonStyled = styled.button`
-  background: ${colors.without_color};
-  color: ${colors.HeaderButtonStyled_color};
+  background: ${Colors.withoutColor};
+  color: ${Colors.headerButtonStyledColor};
   cursor: pointer;
   outline: none;
   border: none;

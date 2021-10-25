@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import colors from '../../../../constants/colors';
+import Colors from '../../../../constants/colors';
 
 const AddBoardWrap = styled.div`
   display: flex;
@@ -12,7 +12,7 @@ const AddBoardWrap = styled.div`
   margin-top: 10px;
   padding: 10px;
   border-radius: 10px;
-  border: 2px ${colors.form_main_color} solid;
+  border: 2px ${Colors.formMainColor} solid;
 `;
 
 export default AddBoardWrap;

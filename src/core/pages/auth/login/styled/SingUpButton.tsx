@@ -1,18 +1,18 @@
 import styled from 'styled-components';
-import colors from '../../../../constants/colors';
+import Colors from '../../../../constants/colors';
 
 const SingUpButton = styled.button`
   width: 90px;
   height: 40px;
   border-radius: 10px;
-  background-color: ${colors.without_color};
+  background-color: ${Colors.withoutColor};
   cursor: pointer;
   outline: none;
-  border: 2px ${colors.form_main_color} solid;
-  color: ${colors.form_main_color};
+  border: 2px ${Colors.formMainColor} solid;
+  color: ${Colors.formMainColor};
   &:hover {
-    border: 2px ${colors.form_main_focus_color} solid;
-    color: ${colors.form_main_focus_color};
+    border: 2px ${Colors.formMainFocusColor} solid;
+    color: ${Colors.formMainFocusColor};
   }
 `;
 

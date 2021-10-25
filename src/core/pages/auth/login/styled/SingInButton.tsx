@@ -1,17 +1,17 @@
 import styled from 'styled-components';
-import colors from '../../../../constants/colors';
+import Colors from '../../../../constants/colors';
 
 const SingInButton = styled.button`
   width: 90px;
   height: 40px;
   border-radius: 10px;
-  background-color: ${colors.form_main_color};
+  background-color: ${Colors.formMainColor};
   outline: none;
   border: 0;
   cursor: pointer;
-  color: ${colors.form_default_color};
+  color: ${Colors.formDefaultColor};
   &:hover {
-    background-color: ${colors.form_main_focus_color};
+    background-color: ${Colors.formMainFocusColor};
   }
 `;
 
