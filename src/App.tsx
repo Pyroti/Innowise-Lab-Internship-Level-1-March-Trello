@@ -5,9 +5,9 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import AppWrapper from './core/components/styled/AppWrapper';
 import MainRoutes from './core/constants/MainRouters';
 import { auth } from './core/firebase/firebase';
-import Login from './core/pages/auth/login/Login';
-import Register from './core/pages/auth/register/Register';
-import Main from './core/pages/main/Main';
+import Login from './pages/auth/login/Login';
+import Register from './pages/auth/register/Register';
+import Main from './pages/main/Main';
 import setUserInitiate from './core/redux/action-creators/auth/setUserAction';
 import PrivateRoute from './privateRouter';
 

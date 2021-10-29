@@ -15,9 +15,13 @@ const AuthForm = styled.form`
   padding: 20px;
   box-shadow: 4px 4px 8px 0px ${Colors.formShadow};
   color: ${Colors.formMainColor};
-  @media (${mediaQueries.mediaTablet}) {
+  @media ${mediaQueries.mediaTablet} {
     width: 350px;
     height: 450px;
+  }
+  @media ${mediaQueries.mediaMobile} {
+    width: 300px;
+    height: 400px;
   }
 `;
 

@@ -21,6 +21,10 @@ const userFail = (error: string): UserAction => ({
   payload: error
 });
 
+const usersRef = (userId: string) => `users/${userId}`;
+const usersBoardsRef = (userId: string, boardId: string) =>
+  `users/${userId}/boards/${boardId}`;
+
 const writeUserData = (userId: string, username: string, email: string) => {
   return async (dispatch: Dispatch<UserAction>): Promise<void> => {
     try {
@@ -34,8 +38,7 @@ const writeUserData = (userId: string, username: string, email: string) => {
         }
       };
       const db = getDatabase();
-      const usersRef = `users/${userId}`;
-      await set(ref(db, usersRef), {
+      set(ref(db, usersRef(userId)), {
         userId: userId,
         username: username,
         email: email
@@ -55,9 +58,8 @@ const writeUserBoardData = (
   return async (dispatch: Dispatch<UserAction>): Promise<void> => {
     try {
       const db = getDatabase();
-      const usersBoardsRef = `users/${currentUser?.uid}/boards/${boardId}`;
-      const usersRef = ref(db, usersBoardsRef);
-      await set(usersRef, {
+      const usersRef = ref(db, usersBoardsRef(currentUser?.uid, boardId));
+      set(usersRef, {
         boardId: boardId
       });
     } catch (error) {
@@ -72,8 +74,7 @@ const getUserData = (currentUser: firebase.User | null) => {
     try {
       dispatch(userStart());
       const db = getDatabase();
-      const usersRef = `users/${currentUser?.uid}`;
-      const userCountRef = ref(db, usersRef);
+      const userCountRef = ref(db, usersRef(currentUser?.uid));
       const snapshot = await get(userCountRef);
       if (snapshot.exists()) {
         const data = snapshot.val();
@@ -90,8 +91,7 @@ const deleteBoardIdData = (userId: string, boardId: string) => {
   return async (dispatch: Dispatch<UserAction>): Promise<void> => {
     try {
       const db = getDatabase();
-      const usersBoardsRef = `users/${userId}/boards/${boardId}`;
-      await remove(ref(db, usersBoardsRef));
+      remove(ref(db, usersBoardsRef(userId, boardId)));
     } catch (error) {
       const err = (error as Error).message;
       dispatch(userFail(err));

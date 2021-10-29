@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTypedSelector } from '../../hooks/useTypeSelector';
 import userSelector from '../../redux/selectors/userSelector';
-import CloseModal from '../CloseModal/CloseModal';
+import CloseModal from '../closeModal/CloseModal';
 import HeaderButtonStyled from './styled/HeaderButtonStyled';
 import HeaderContentWidth from './styled/HeaderContentWidth';
 import HeaderStyled from './styled/HeaderStyled';

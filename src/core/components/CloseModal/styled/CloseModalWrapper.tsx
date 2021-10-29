@@ -13,11 +13,11 @@ const CloseModalWrapper = styled.div`
   z-index: 100;
   border-radius: 10px;
   padding: 24px;
-  @media (${mediaQueries.mediaTablet}) {
+  @media ${mediaQueries.mediaTablet} {
     width: 400px;
     height: 350px;
   }
-  @media (${mediaQueries.mediaMobile}) {
+  @media ${mediaQueries.mediaMobile} {
     width: 310px;
     height: 350px;
   }

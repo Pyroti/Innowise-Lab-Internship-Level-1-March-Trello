@@ -4,7 +4,6 @@ import Colors from '../../../constants/colors';
 const CloseModalBackground = styled.div`
   width: 100%;
   height: 100%;
-  margin: -10px;
   background: ${Colors.closeModalBackgroundBackground};
   position: fixed;
   display: flex;

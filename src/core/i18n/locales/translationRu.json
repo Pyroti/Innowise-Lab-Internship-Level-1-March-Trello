@@ -19,5 +19,6 @@
   "areYouSureYouWantToLogOut": "Вы уверены, что хотите выйти?",
   "addBoard": "Добавить доску",
   "addCard": "Добавить карточку",
-  "enterTitle": "Введите заголовок"
+  "enterTitle": "Введите заголовок",
+  "wrongMailOrPassword": "Неверный почтовый ящик или пароль"
 }

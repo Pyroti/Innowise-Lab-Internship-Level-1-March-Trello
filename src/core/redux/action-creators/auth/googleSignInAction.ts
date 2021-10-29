@@ -1,4 +1,5 @@
 import firebase from 'firebase/compat/app';
+import { getDatabase, ref, update } from 'firebase/database';
 import { Dispatch } from 'redux';
 import { auth, googleAuthProvider } from '../../../firebase/firebase';
 import {
@@ -22,12 +23,24 @@ const googleSignInFail = (error: string): GoogleSignInAction => ({
   payload: error
 });
 
+const writeUserGoogleData = (userGoogle: firebase.User) => {
+  const db = getDatabase();
+  const usersRef = `users/${userGoogle.uid}`;
+  const userCountRef = ref(db, usersRef);
+  update(userCountRef, {
+    userId: userGoogle.uid,
+    username: userGoogle.displayName,
+    email: userGoogle.email
+  });
+};
+
 export const googleSignInInitiate = () => {
   return (dispatch: Dispatch<GoogleSignInAction>): void => {
     dispatch(googleSignInStart());
     auth
       .signInWithPopup(googleAuthProvider)
       .then(({ user }) => {
+        writeUserGoogleData(user);
         dispatch(googleSignInSuccess(user));
       })
       .catch((error: Error) => dispatch(googleSignInFail(error.message)));

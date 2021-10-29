@@ -2,12 +2,13 @@ import styled from 'styled-components';
 import mediaQueries from '../../../constants/mediaQueries';
 
 const HeaderContentWidth = styled.div`
-  width: 200px;
+  padding: 15px 60px;
   display: flex;
   justify-content: center;
 
-  @media (${mediaQueries.mediaMobile}) {
-    width: 150px;
+  @media ${mediaQueries.mediaTabletSmall} {
+    width: none;
+    padding: 15px 30px;
   }
 `;
 

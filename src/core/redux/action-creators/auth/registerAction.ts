@@ -25,9 +25,9 @@ export const registerInitiate = (
   password: string,
   displayName: string
 ) => {
-  return async (dispatch: Dispatch<RegisterAction>): Promise<void> => {
+  return (dispatch: Dispatch<RegisterAction>): void => {
     dispatch(registerStart());
-    await auth
+    auth
       .createUserWithEmailAndPassword(email, password)
       .then(({ user }) => {
         user?.updateProfile({
