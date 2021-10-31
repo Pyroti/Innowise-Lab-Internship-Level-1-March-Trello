@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
-import AuthContent from '../../../core/components/styled/AuthContent';
-import AuthForm from '../../../core/components/styled/AuthForm';
+import AuthContent from '../../../core/components/authContent/AuthContent';
+import AuthForm from '../../../core/components/authForm/AuthForm';
 import MainRoutes from '../../../core/constants/MainRouters';
 import { useTypedSelector } from '../../../core/hooks/useTypeSelector';
 import { registerInitiate } from '../../../core/redux/action-creators/auth/registerAction';
@@ -65,11 +65,7 @@ const Register: React.FC = () => {
 
   const checkPassword = () => {
     if (!regepx.regPasswordRules.test(password)) {
-      toast.warn(
-        `Пароль должен содержать одно число, одну латинскую цифру в 
-      верхнем и нижнем регистре и состоять минимум из 6 символов`,
-        toastRyles as ToastOptions
-      );
+      toast.warn(t('passwordRules'), toastRyles as ToastOptions);
       return false;
     } else {
       return true;
@@ -78,7 +74,7 @@ const Register: React.FC = () => {
 
   const checkMail = () => {
     if (!regepx.regMailRules.test(email)) {
-      toast.warn('Неверный логин', toastRyles as ToastOptions);
+      toast.warn(t('invalidLogin'), toastRyles as ToastOptions);
       return false;
     } else {
       return true;
@@ -87,7 +83,7 @@ const Register: React.FC = () => {
 
   const checkDisplayName = () => {
     if (displayName === '') {
-      toast.warn('Вы не ввели имя пользователя', toastRyles as ToastOptions);
+      toast.warn(t('displayNameEmpty'), toastRyles as ToastOptions);
       return false;
     } else {
       return true;
@@ -96,7 +92,7 @@ const Register: React.FC = () => {
 
   const checkPasswordMathes = () => {
     if (password !== passwordConfirm) {
-      toast.warn('Пароли не совпадают', toastRyles as ToastOptions);
+      toast.warn(t('passwordsDoNotMatch'), toastRyles as ToastOptions);
       return false;
     } else {
       return true;
@@ -106,7 +102,7 @@ const Register: React.FC = () => {
   const checkUserExist = () => {
     const usersMail = Object.values(users).map((user) => user.email);
     if (usersMail.indexOf(email) != -1) {
-      toast.warn('Пользователь существует', toastRyles as ToastOptions);
+      toast.warn(t('theUserExists'), toastRyles as ToastOptions);
       return false;
     } else {
       return true;

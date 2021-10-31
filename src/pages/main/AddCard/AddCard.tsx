@@ -39,6 +39,8 @@ const AddCard: React.FC<Props> = (props) => {
     }
   }, [keyPress, isOpenCardWrap]);
 
+  const addCardClick = () => addCard(boardId);
+
   if (isOpenCardWrap) {
     return (
       <AddCardWrap>
@@ -49,7 +51,7 @@ const AddCard: React.FC<Props> = (props) => {
           value={title}
           onChange={handleChange}
         />
-        <AddCardWrapButton type="button" onClick={() => addCard(boardId)}>
+        <AddCardWrapButton type="button" onClick={addCardClick}>
           {t('addCard')}
         </AddCardWrapButton>
         <CloseCardIcon onClick={openCardwrap} />

@@ -1,22 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { v4 as uuidv4 } from 'uuid';
 import sortData from '../../../core/helpers/sortData';
 import { useTypedSelector } from '../../../core/hooks/useTypeSelector';
 import {
-  deleteCardIdData,
-  getBoardsData
-} from '../../../core/redux/action-creators/boards/boardAction';
-import {
-  deleteCardData,
   getCardsData,
-  updateCardOrderData,
-  writeBoardCardData,
-  writeCardData
+  updateCardOrderData
 } from '../../../core/redux/action-creators/cards/cardAction';
 import boardSelector from '../../../core/redux/selectors/boardSelector';
 import cardSelector from '../../../core/redux/selectors/cardSelector';
 import userSelector from '../../../core/redux/selectors/userSelector';
+import addCardThunk from '../../../core/redux/thunk/cards/AddCard';
+import changeCardOrderBetweenBoardsDnDThunk from '../../../core/redux/thunk/cards/changeCardOrderBetweenBoardsDnD';
+import changeCardOrderInBoardDnDThunk from '../../../core/redux/thunk/cards/changeCardOrderInBoardDnD';
+import dropHandlerThunk from '../../../core/redux/thunk/cards/dropHandler';
 import { CardState } from '../../../core/redux/types/cards/cardTypes';
 import AddCard from '../AddCard/AddCard';
 import Card from './card/Card';
@@ -57,13 +53,13 @@ const Cards: React.FC<Props> = (props) => {
   const { cardTitle } = cardState;
 
   const cardsId = useCallback(() => {
-    const allCardsId = Object.values(
-      Object.keys(user.boards).map((boardIdd) => board[boardIdd].cards)
-    ).filter((card) => card);
-
-    const finalCardsId = Object.assign({}, ...allCardsId);
-
-    return Object.keys(finalCardsId);
+    if (user.boards) {
+      const allCardsId = Object.values(
+        Object.keys(user.boards).map((boardIdd) => board[boardIdd]?.cards)
+      ).filter((card) => card);
+      const finalCardsId = Object.assign({}, ...allCardsId);
+      return Object.keys(finalCardsId);
+    }
   }, [board, user.boards]);
 
   const dispatch = useDispatch();
@@ -86,7 +82,7 @@ const Cards: React.FC<Props> = (props) => {
     );
   };
 
-  const createOrderNumCard = (currentBoardId: string) => {
+  const createOrderNumCard = (currentBoardId: string): number => {
     if (board[currentBoardId].cards) {
       return showCards(boardId).length + 1;
     } else {
@@ -94,13 +90,16 @@ const Cards: React.FC<Props> = (props) => {
     }
   };
 
-  const addCard = (boardId: string) => {
-    const cardId = uuidv4();
-    const order = createOrderNumCard(boardId);
-    dispatch(writeCardData(cardId, order, cardTitle, 'none', card));
-    dispatch(writeBoardCardData(boardId, cardId));
-    setCardState({ cardTitle: '' });
-    dispatch(getBoardsData(Object.keys(user.boards)));
+  const addCard = () => {
+    const addCardThunkData = {
+      createOrderNumCard,
+      setCardState,
+      boardId,
+      user,
+      card,
+      cardTitle
+    };
+    dispatch(addCardThunk(addCardThunkData));
   };
 
   const updateCardsOrder = (boardId: string) => {
@@ -131,49 +130,21 @@ const Cards: React.FC<Props> = (props) => {
   };
 
   const changeCardOrderInBoardDnD = (cardData: CardState) => {
-    showCards(boardId).map((card) => {
-      const isCurrentCard = card.cardId === currentCard.cardId;
-
-      const isFirstCard =
-        card.order <= cardData.order &&
-        card.order > currentCard.order &&
-        currentCard.order < cardData.order;
-
-      const isLastCard =
-        card.order >= cardData.order &&
-        card.order < currentCard.order &&
-        currentCard.order > cardData.order;
-
-      if (isCurrentCard) {
-        dispatch(updateCardOrderData(card.cardId, cardData.order));
-      } else if (isFirstCard) {
-        dispatch(updateCardOrderData(card.cardId, card.order - 1));
-      } else if (isLastCard) {
-        dispatch(updateCardOrderData(card.cardId, card.order + 1));
-      }
-    });
+    const data = { showCards, currentCard, boardId, cardData };
+    dispatch(changeCardOrderInBoardDnDThunk(data));
   };
 
   const changeCardOrderBetweenBoardsDnD = (cardData: CardState) => {
-    dispatch(deleteCardData(currentCard.cardId, card));
-    dispatch(deleteCardIdData(currentCard.cardId, currentBordIdcard));
-    updateCardsOrder(currentBordIdcard);
-    updateCardsOrder(boardId);
-    dispatch(
-      writeCardData(
-        currentCard.cardId,
-        cardData.order,
-        currentCard.title,
-        'none',
-        card
-      )
-    );
-    dispatch(writeBoardCardData(boardId, currentCard.cardId));
-    showCards(boardId).map((cardItem) => {
-      if (cardItem.order >= cardData.order) {
-        dispatch(updateCardOrderData(cardItem.cardId, cardItem.order + 1));
-      }
-    });
+    const data = {
+      updateCardsOrder,
+      card,
+      currentBordIdcard,
+      cardData,
+      boardId,
+      showCards,
+      currentCard
+    };
+    dispatch(changeCardOrderBetweenBoardsDnDThunk(data));
   };
 
   const dropHandler = (
@@ -181,16 +152,17 @@ const Cards: React.FC<Props> = (props) => {
     cardData: CardState
   ) => {
     event.preventDefault();
-    const isCard = currentItemNameId === cardNameId;
-    const isCurrentBoard = currentBordIdcard === boardId;
-    if (isCard) {
-      if (isCurrentBoard) {
-        changeCardOrderInBoardDnD(cardData);
-      } else {
-        changeCardOrderBetweenBoardsDnD(cardData);
-      }
-      dispatch(getBoardsData(Object.keys(user.boards)));
-    }
+    const data = {
+      currentItemNameId,
+      cardNameId,
+      currentBordIdcard,
+      changeCardOrderInBoardDnD,
+      cardData,
+      boardId,
+      changeCardOrderBetweenBoardsDnD,
+      user
+    };
+    dispatch(dropHandlerThunk(data));
   };
 
   return (

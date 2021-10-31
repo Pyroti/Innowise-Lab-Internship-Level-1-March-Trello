@@ -23,26 +23,34 @@ const googleSignInFail = (error: string): GoogleSignInAction => ({
   payload: error
 });
 
-const writeUserGoogleData = (userGoogle: firebase.User) => {
-  const db = getDatabase();
-  const usersRef = `users/${userGoogle.uid}`;
-  const userCountRef = ref(db, usersRef);
-  update(userCountRef, {
-    userId: userGoogle.uid,
-    username: userGoogle.displayName,
-    email: userGoogle.email
-  });
+const writeUserGoogleData = async (userGoogle: firebase.User) => {
+  try {
+    const db = getDatabase();
+    const usersRef = `users/${userGoogle.uid}`;
+    const userCountRef = ref(db, usersRef);
+    update(userCountRef, {
+      userId: userGoogle.uid,
+      username: userGoogle.displayName,
+      email: userGoogle.email
+    });
+  } catch (error) {
+    const err = (error as Error).message;
+    return err;
+  }
 };
 
 export const googleSignInInitiate = () => {
-  return (dispatch: Dispatch<GoogleSignInAction>): void => {
-    dispatch(googleSignInStart());
-    auth
-      .signInWithPopup(googleAuthProvider)
-      .then(({ user }) => {
-        writeUserGoogleData(user);
+  return async (dispatch: Dispatch<GoogleSignInAction>): Promise<void> => {
+    try {
+      dispatch(googleSignInStart());
+      const { user } = await auth.signInWithPopup(googleAuthProvider);
+      const res = await writeUserGoogleData(user);
+      if (!res) {
         dispatch(googleSignInSuccess(user));
-      })
-      .catch((error: Error) => dispatch(googleSignInFail(error.message)));
+      }
+    } catch (error) {
+      const err = (error as Error).message;
+      dispatch(googleSignInFail(err));
+    }
   };
 };

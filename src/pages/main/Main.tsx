@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { v4 as uuidv4 } from 'uuid';
 import Header from '../../core/components/header/Header';
 import { useTypedSelector } from '../../core/hooks/useTypeSelector';
 import {
-  deleteCardIdData,
   getBoardsData,
-  updateBoardOrderData,
-  writeBoardData
+  updateBoardOrderData
 } from '../../core/redux/action-creators/boards/boardAction';
-import {
-  getUserData,
-  writeUserBoardData
-} from '../../core/redux/action-creators/users/userAction';
+import { getUserData } from '../../core/redux/action-creators/users/userAction';
 import authSelector from '../../core/redux/selectors/authSelector';
 import boardSelector from '../../core/redux/selectors/boardSelector';
 import userSelector from '../../core/redux/selectors/userSelector';
@@ -22,13 +16,11 @@ import Cards from './cards/Cards';
 import Board from './board/Board';
 import BoardWrap from './styled/BoardWrap';
 import BoardStyled from './board/styled/BoardStyled';
-import {
-  deleteCardData,
-  writeBoardCardData,
-  writeCardData
-} from '../../core/redux/action-creators/cards/cardAction';
 import cardSelector from '../../core/redux/selectors/cardSelector';
 import sortData from '../../core/helpers/sortData';
+import addBoardThunk from '../../core/redux/thunk/main/addBoard';
+import changeBoardOrderDnDThunk from '../../core/redux/thunk/main/changeBoardOrderDnD';
+import pushTheFirstCardToAnotherBoardThunk from '../../core/redux/thunk/main/pushTheFirstCardToAnotherBoard';
 
 const boardNameId = 'board';
 
@@ -87,12 +79,15 @@ const Main: React.FC = () => {
   };
 
   const addBoard = () => {
-    const boardId = uuidv4();
-    const order = createOrderNum();
-    dispatch(writeBoardData(boardId, order, boardTitle, board));
-    dispatch(writeUserBoardData(currentUser, boardId));
-    setBoardState({ boardTitle: '' });
-    getCurrentUserData();
+    const data = {
+      getCurrentUserData,
+      setBoardState,
+      currentUser,
+      board,
+      boardTitle,
+      createOrderNum
+    };
+    dispatch(addBoardThunk(data));
   };
 
   const dataToRender = Object.values(filterBoards() ?? []);
@@ -118,6 +113,23 @@ const Main: React.FC = () => {
     event.preventDefault();
   };
 
+  const changeBoardOrderDnD = (boardData: BoardState) => {
+    const data = { filterBoards, currentBoard, boardData };
+    dispatch(changeBoardOrderDnDThunk(data));
+  };
+
+  const pushTheFirstCardToAnotherBoard = (boardData: BoardState) => {
+    const data = {
+      setIsUpdateCards,
+      currentCard,
+      currentBordIdcard,
+      card,
+      boardData,
+      user
+    };
+    dispatch(pushTheFirstCardToAnotherBoardThunk(data));
+  };
+
   const dropHandler = (
     event: React.DragEvent<HTMLDivElement>,
     boardData: BoardState
@@ -125,36 +137,9 @@ const Main: React.FC = () => {
     event.preventDefault();
     const isBoard = currentItemNameId === boardNameId;
     if (isBoard) {
-      filterBoards().map((board) => {
-        const isCurrentBoard = board.boardId === currentBoard.boardId;
-
-        const isFirstBoard =
-          board.order <= boardData.order &&
-          board.order > currentBoard.order &&
-          currentBoard.order < boardData.order;
-
-        const isLastBoard =
-          board.order >= boardData.order &&
-          board.order < currentBoard.order &&
-          currentBoard.order > boardData.order;
-
-        if (isCurrentBoard) {
-          dispatch(updateBoardOrderData(board.boardId, boardData.order));
-        } else if (isFirstBoard) {
-          dispatch(updateBoardOrderData(board.boardId, board.order - 1));
-        } else if (isLastBoard) {
-          dispatch(updateBoardOrderData(board.boardId, board.order + 1));
-        }
-      });
+      changeBoardOrderDnD(boardData);
     } else if (!boardData.cards) {
-      dispatch(deleteCardData(currentCard.cardId, card));
-      dispatch(deleteCardIdData(currentCard.cardId, currentBordIdcard));
-      setIsUpdateCards(true);
-      dispatch(
-        writeCardData(currentCard.cardId, 1, currentCard.title, 'none', card)
-      );
-      dispatch(writeBoardCardData(boardData.boardId, currentCard.cardId));
-      dispatch(getBoardsData(Object.keys(user.boards)));
+      pushTheFirstCardToAnotherBoard(boardData);
     }
     getCurrentUserData();
   };

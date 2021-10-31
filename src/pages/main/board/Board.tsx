@@ -1,16 +1,7 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTypedSelector } from '../../../core/hooks/useTypeSelector';
-import {
-  deleteBoardData,
-  editBoardData,
-  getBoardsData
-} from '../../../core/redux/action-creators/boards/boardAction';
 import { deleteCardData } from '../../../core/redux/action-creators/cards/cardAction';
-import {
-  deleteBoardIdData,
-  getUserData
-} from '../../../core/redux/action-creators/users/userAction';
 import authSelector from '../../../core/redux/selectors/authSelector';
 import boardSelector from '../../../core/redux/selectors/boardSelector';
 import BoardTitle from './styled/BoardTitle';
@@ -22,6 +13,10 @@ import CloseIcon from '@material-ui/icons/Close';
 import CheckIcon from '@mui/icons-material/Check';
 import Input from '@mui/material/Input';
 import userSelector from '../../../core/redux/selectors/userSelector';
+import cardSelector from '../../../core/redux/selectors/cardSelector';
+import DeleteBoardModal from '../../../core/components/deleteBoardModal/deleteBoardModal';
+import deleteBoardThunk from '../../../core/redux/thunk/board/deleteBoard';
+import editBoardThunk from '../../../core/redux/thunk/board/editBoard';
 
 interface BoardProps {
   boardData: BoardState;
@@ -34,7 +29,9 @@ const Board: React.FC<BoardProps> = (props) => {
   const { board } = useTypedSelector(boardSelector);
   const { currentUser } = useTypedSelector(authSelector);
   const { user } = useTypedSelector(userSelector);
+  const cards = useTypedSelector(cardSelector).card;
   const [isEditing, setIsEditing] = useState(false);
+  const [modalIsOpen, setIsOpen] = useState(false);
   const [boardState, setBoardate] = useState({
     boardTitle: boardData.title
   });
@@ -42,7 +39,31 @@ const Board: React.FC<BoardProps> = (props) => {
 
   const dispatch = useDispatch();
 
-  const cards = useTypedSelector((state) => state.card).card;
+  const isEditBoard = () => {
+    setIsEditing((prevIsEditing) => !prevIsEditing);
+  };
+
+  const editBoard = useCallback(() => {
+    const data = { boardData, boardTitle, user };
+    dispatch(editBoardThunk(data));
+    isEditBoard();
+  }, [boardData, boardTitle, dispatch, user]);
+
+  const keyPress = useCallback(
+    (event) => {
+      if (event.key === 'Enter') {
+        editBoard();
+      }
+    },
+    [editBoard]
+  );
+
+  useEffect(() => {
+    if (isEditing) {
+      document.addEventListener('keydown', keyPress);
+      return () => document.removeEventListener('keydown', keyPress);
+    }
+  }, [keyPress, isEditing]);
 
   const deleteCardsInBoard = (boardId: string) => {
     const cardsInBoards = board[boardId].cards;
@@ -55,11 +76,14 @@ const Board: React.FC<BoardProps> = (props) => {
   };
 
   const deleteBoard = (boardId: string) => {
-    deleteCardsInBoard(boardId);
-    dispatch(deleteBoardData(boardId, board));
-    dispatch(deleteBoardIdData(currentUser.uid, boardId));
-    updateBoardsOrder();
-    dispatch(getUserData(currentUser));
+    const data = {
+      deleteCardsInBoard,
+      board,
+      currentUser,
+      boardId,
+      updateBoardsOrder
+    };
+    dispatch(deleteBoardThunk(data));
   };
 
   const handleChange = (event: React.ChangeEvent) => {
@@ -67,14 +91,10 @@ const Board: React.FC<BoardProps> = (props) => {
     setBoardate((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const isEditBoard = () => {
-    setIsEditing((prev) => !prev);
-  };
+  const delBoard = () => deleteBoard(boardData.boardId);
 
-  const editBoard = () => {
-    dispatch(editBoardData(boardData.boardId, boardTitle));
-    dispatch(getBoardsData(Object.keys(user.boards)));
-    isEditBoard();
+  const openDeleteBoardModal = () => {
+    setIsOpen((prevIsOpen) => !prevIsOpen);
   };
 
   if (isEditing) {
@@ -96,15 +116,22 @@ const Board: React.FC<BoardProps> = (props) => {
   }
 
   return (
-    <BoardTitle>
-      {boardData.order}
-      {':'}
-      {boardData.title}
-      <OptionWrap>
-        <CreateIcon onClick={isEditBoard} />
-        <DeleteRoundedIcon onClick={() => deleteBoard(boardData.boardId)} />
-      </OptionWrap>
-    </BoardTitle>
+    <>
+      <BoardTitle>
+        {boardData.order}
+        {':'}
+        {boardData.title}
+        <OptionWrap>
+          <CreateIcon onClick={isEditBoard} />
+          <DeleteRoundedIcon onClick={openDeleteBoardModal} />
+        </OptionWrap>
+      </BoardTitle>
+      <DeleteBoardModal
+        modalIsOpen={modalIsOpen}
+        setIsOpen={setIsOpen}
+        delBoard={delBoard}
+      />
+    </>
   );
 };
 

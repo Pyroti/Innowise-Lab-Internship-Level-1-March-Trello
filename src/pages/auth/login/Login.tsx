@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
-import AuthContent from '../../../core/components/styled/AuthContent';
-import AuthForm from '../../../core/components/styled/AuthForm';
+import AuthContent from '../../../core/components/authContent/AuthContent';
+import AuthForm from '../../../core/components/authForm/AuthForm';
 import MainRoutes from '../../../core/constants/MainRouters';
 import { useTypedSelector } from '../../../core/hooks/useTypeSelector';
 import { googleSignInInitiate } from '../../../core/redux/action-creators/auth/googleSignInAction';
@@ -52,17 +52,17 @@ const Login: React.FC = () => {
 
   const checkEmptyInput = () => {
     if (email === '') {
-      toast.warn('Вы не ввели почту', toastRyles as ToastOptions);
+      toast.warn(t('youDidntEnterYourPassword'), toastRyles as ToastOptions);
     }
     if (password === '') {
-      toast.warn('Вы не ввели пароль', toastRyles as ToastOptions);
+      toast.warn(t('youDidntEnterYourEmail'), toastRyles as ToastOptions);
     }
   };
 
   const checkUserExists = () => {
     const usersMail = Object.values(users).map((user) => user.email);
     if (usersMail.indexOf(email) === -1) {
-      toast.warn('Пользователь не существует', toastRyles as ToastOptions);
+      toast.warn(t('theUserDoesNotExist'), toastRyles as ToastOptions);
     }
   };
 

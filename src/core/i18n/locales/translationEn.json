@@ -20,5 +20,16 @@
   "addBoard": "Add board",
   "addCard": "Add card",
   "enterTitle": "Enter title",
-  "wrongMailOrPassword": "Wrong mailBox or password"
+  "wrongMailOrPassword": "Wrong mailBox or password",
+  "youDidntEnterYourPassword": "You didn't enter your password",
+  "youDidntEnterYourEmail": "you didn't enter your email",
+  "theUserDoesNotExist": "The user does not exist",
+  "passwordRules": "The password must contain one number, one Latin digit in uppercase and lowercase and consist of at least 6 characters",
+  "invalidLogin": "Invalid login",
+  "displayNameEmpty": "You didn't enter a username",
+  "passwordsDoNotMatch": "Passwords don't match",
+  "theUserExists": "The user exists",
+  "deleteBoard": "Are you sure you want to delete the board?",
+  "deleteCard": "Are you sure you want to delete the card?",
+  "yes": "да"
 }

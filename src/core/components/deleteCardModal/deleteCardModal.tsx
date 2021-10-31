@@ -6,12 +6,8 @@ import React, {
   useRef
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import MainRouters from '../../constants/MainRouters';
-import { useTypedSelector } from '../../hooks/useTypeSelector';
-import { logoutInitiate } from '../../redux/action-creators/auth/logoutAction';
-import authSelector from '../../redux/selectors/authSelector';
 import CancelButton from './styled/CancelButton';
 import CloseModalBackground from './styled/CloseModalBackground';
 import CloseModalContent from './styled/CloseModalContent';
@@ -22,16 +18,15 @@ import ExitButton from './styled/ExitButton';
 interface Props {
   modalIsOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
+  deleteCard: () => void;
 }
 
-const CloseModal: React.FC<Props> = (props: Props) => {
+const DeleteCardModal: React.FC<Props> = (props: Props) => {
   const { t } = useTranslation();
-  const { currentUser } = useTypedSelector(authSelector);
-  const { modalIsOpen, setIsOpen } = props;
+
+  const { modalIsOpen, setIsOpen, deleteCard } = props;
 
   const modalRef = useRef();
-
-  const dispatch = useDispatch();
 
   const closeModal = (event: React.MouseEvent<HTMLElement>) => {
     if (modalRef.current === event.target) {
@@ -55,15 +50,9 @@ const CloseModal: React.FC<Props> = (props: Props) => {
 
   const showModal = () => setIsOpen((prev) => !prev);
 
-  const handleAuth = () => {
-    if (currentUser) {
-      dispatch(logoutInitiate());
-    }
-  };
-
   const closeApp = () => {
+    deleteCard();
     showModal();
-    handleAuth();
   };
 
   return (
@@ -72,10 +61,10 @@ const CloseModal: React.FC<Props> = (props: Props) => {
         <CloseModalBackground onClick={closeModal} ref={modalRef}>
           <CloseModalWrapper>
             <CloseModalContent>
-              <h1>{t('areYouSureYouWantToLogOut')}</h1>
+              <h1>{t('deleteCard')}</h1>
               <Link to={MainRouters.login}>
                 <ExitButton type="button" onClick={closeApp}>
-                  {t('exit')}
+                  {t('yes')}
                 </ExitButton>
               </Link>
               <CancelButton type="button" onClick={showModal}>
@@ -90,4 +79,4 @@ const CloseModal: React.FC<Props> = (props: Props) => {
   );
 };
 
-export default CloseModal;
+export default DeleteCardModal;

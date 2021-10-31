@@ -20,5 +20,16 @@
   "addBoard": "Добавить доску",
   "addCard": "Добавить карточку",
   "enterTitle": "Введите заголовок",
-  "wrongMailOrPassword": "Неверный почтовый ящик или пароль"
+  "wrongMailOrPassword": "Неверный почтовый ящик или пароль",
+  "youDidntEnterYourPassword": "Вы не ввели пароль",
+  "youDidntEnterYourEmail": "Вы не ввели почту",
+  "theUserDoesNotExist": "Пользователь не существует",
+  "passwordRules": "Пароль должен содержать одно число, одну латинскую цифру в верхнем и нижнем регистре и состоять минимум из 6 символов",
+  "invalidLogin": "Неверный логин",
+  "displayNameEmpty": "Вы не ввели имя пользователя",
+  "passwordsDoNotMatch": "Пароли не совпадают",
+  "theUserExists": "Пользователь существует",
+  "deleteBoard": "Вы уверены что хотите удалить доску?",
+  "deleteCard": "Вы уверены что хотите удалить карточку?",
+  "yes": "да"
 }
