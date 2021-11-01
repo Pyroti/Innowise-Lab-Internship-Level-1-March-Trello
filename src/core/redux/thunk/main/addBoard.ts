@@ -1,12 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { v4 as uuidv4 } from 'uuid';
 import { writeBoardData } from '../../action-creators/boards/boardAction';
 import { toast, ToastOptions } from 'react-toastify';
 import toastRyles from '../../../constants/toastRules';
 import { writeUserBoardData } from '../../action-creators/users/userAction';
-import { BoardState } from '../../types/boards/boardTypes';
-import firebase from 'firebase/compat/app';
+import { RootState } from '../../reducer/rootReducer';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import boardSelector from '../../selectors/boardSelector';
+import authSelector from '../../selectors/authSelector';
 
 interface CardDate {
   getCurrentUserData: () => void;
@@ -15,25 +16,24 @@ interface CardDate {
       boardTitle: string;
     }>
   ) => void;
-  currentUser: firebase.User;
   boardTitle: string;
   createOrderNum: () => number;
-  board: {
-    [id: string]: BoardState;
-  };
 }
 
-const addBoardThunk = (props: CardDate) => {
-  return async (dispatch: any): Promise<void> => {
+const addBoardThunk = ({
+  getCurrentUserData,
+  setBoardState,
+  boardTitle,
+  createOrderNum
+}: CardDate) => {
+  return async (
+    dispatch: ThunkDispatch<RootState, void, Action>,
+    getState: () => RootState
+  ): Promise<void> => {
     try {
-      const {
-        getCurrentUserData,
-        setBoardState,
-        currentUser,
-        board,
-        boardTitle,
-        createOrderNum
-      } = props;
+      const state = getState();
+      const { currentUser } = authSelector(state);
+      const { board } = boardSelector(state);
       const boardId = uuidv4();
       const order = createOrderNum();
       dispatch(writeBoardData(boardId, order, boardTitle, board));
@@ -41,8 +41,8 @@ const addBoardThunk = (props: CardDate) => {
       setBoardState({ boardTitle: '' });
       getCurrentUserData();
     } catch (error) {
-      const err = (error as Error).message;
-      toast.warn(err, toastRyles as ToastOptions);
+      const errorMessage = (error as Error).message;
+      toast.warn(errorMessage, toastRyles as ToastOptions);
     }
   };
 };

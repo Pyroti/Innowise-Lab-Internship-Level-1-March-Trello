@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTypedSelector } from '../../../core/hooks/useTypeSelector';
 import { deleteCardData } from '../../../core/redux/action-creators/cards/cardAction';
-import authSelector from '../../../core/redux/selectors/authSelector';
 import boardSelector from '../../../core/redux/selectors/boardSelector';
 import BoardTitle from './styled/BoardTitle';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
@@ -12,7 +11,6 @@ import CreateIcon from '@mui/icons-material/Create';
 import CloseIcon from '@material-ui/icons/Close';
 import CheckIcon from '@mui/icons-material/Check';
 import Input from '@mui/material/Input';
-import userSelector from '../../../core/redux/selectors/userSelector';
 import cardSelector from '../../../core/redux/selectors/cardSelector';
 import DeleteBoardModal from '../../../core/components/deleteBoardModal/deleteBoardModal';
 import deleteBoardThunk from '../../../core/redux/thunk/board/deleteBoard';
@@ -27,8 +25,6 @@ const Board: React.FC<BoardProps> = (props) => {
   const { boardData, updateBoardsOrder } = props;
 
   const { board } = useTypedSelector(boardSelector);
-  const { currentUser } = useTypedSelector(authSelector);
-  const { user } = useTypedSelector(userSelector);
   const cards = useTypedSelector(cardSelector).card;
   const [isEditing, setIsEditing] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -44,10 +40,10 @@ const Board: React.FC<BoardProps> = (props) => {
   };
 
   const editBoard = useCallback(() => {
-    const data = { boardData, boardTitle, user };
+    const data = { boardData, boardTitle };
     dispatch(editBoardThunk(data));
     isEditBoard();
-  }, [boardData, boardTitle, dispatch, user]);
+  }, [boardData, boardTitle, dispatch]);
 
   const keyPress = useCallback(
     (event) => {
@@ -78,8 +74,6 @@ const Board: React.FC<BoardProps> = (props) => {
   const deleteBoard = (boardId: string) => {
     const data = {
       deleteCardsInBoard,
-      board,
-      currentUser,
       boardId,
       updateBoardsOrder
     };

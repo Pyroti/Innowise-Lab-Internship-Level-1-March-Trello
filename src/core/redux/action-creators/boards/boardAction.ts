@@ -49,8 +49,8 @@ const writeBoardData = (
       });
       dispatch(boardSuccess({ ...boards, [boardId]: board }));
     } catch (error) {
-      const err = (error as Error).message;
-      dispatch(boardFail(err));
+      const errorMessage = (error as Error).message;
+      dispatch(boardFail(errorMessage));
     }
   };
 };
@@ -72,8 +72,8 @@ const getBoardsData = (boardsId: string[]) => {
       }, {} as BoardState);
       dispatch(boardSuccess(finalBoards));
     } catch (error) {
-      const err = (error as Error).message;
-      dispatch(boardFail(err));
+      const errorMessage = (error as Error).message;
+      dispatch(boardFail(errorMessage));
     }
   };
 };
@@ -84,8 +84,8 @@ const deleteCardIdData = (cardId: string, boardId: string) => {
       const db = getDatabase();
       remove(ref(db, boardCardIdRef(boardId, cardId)));
     } catch (error) {
-      const err = (error as Error).message;
-      dispatch(boardFail(err));
+      const errorMessage = (error as Error).message;
+      dispatch(boardFail(errorMessage));
     }
   };
 };
@@ -102,8 +102,8 @@ const deleteBoardData = (
       delete boards[`${boardId}`];
       dispatch(boardSuccess(boards));
     } catch (error) {
-      const err = (error as Error).message;
-      dispatch(boardFail(err));
+      const errorMessage = (error as Error).message;
+      dispatch(boardFail(errorMessage));
     }
   };
 };
@@ -114,8 +114,8 @@ const editBoardData = (boardId: string, boardTitle: string) => {
       const db = getDatabase();
       update(ref(db, boardIdRef(boardId)), { title: boardTitle });
     } catch (error) {
-      const err = (error as Error).message;
-      dispatch(boardFail(err));
+      const errorMessage = (error as Error).message;
+      dispatch(boardFail(errorMessage));
     }
   };
 };
@@ -126,8 +126,8 @@ const updateBoardOrderData = (boardId: string, orderNum: number) => {
       const db = getDatabase();
       update(ref(db, boardIdRef(boardId)), { order: orderNum });
     } catch (error) {
-      const err = (error as Error).message;
-      dispatch(boardFail(err));
+      const errorMessage = (error as Error).message;
+      dispatch(boardFail(errorMessage));
     }
   };
 };

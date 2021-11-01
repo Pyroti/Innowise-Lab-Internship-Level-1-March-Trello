@@ -23,19 +23,20 @@ const googleSignInFail = (error: string): GoogleSignInAction => ({
   payload: error
 });
 
+const usersRef = (userGoogle: firebase.User) => `users/${userGoogle.uid}`;
+
 const writeUserGoogleData = async (userGoogle: firebase.User) => {
   try {
     const db = getDatabase();
-    const usersRef = `users/${userGoogle.uid}`;
-    const userCountRef = ref(db, usersRef);
-    update(userCountRef, {
+    const userCountRef = ref(db, usersRef(userGoogle));
+    await update(userCountRef, {
       userId: userGoogle.uid,
       username: userGoogle.displayName,
       email: userGoogle.email
     });
   } catch (error) {
-    const err = (error as Error).message;
-    return err;
+    const errorMessage = (error as Error).message;
+    return errorMessage;
   }
 };
 
@@ -49,8 +50,8 @@ export const googleSignInInitiate = () => {
         dispatch(googleSignInSuccess(user));
       }
     } catch (error) {
-      const err = (error as Error).message;
-      dispatch(googleSignInFail(err));
+      const errorMessage = (error as Error).message;
+      dispatch(googleSignInFail(errorMessage));
     }
   };
 };

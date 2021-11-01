@@ -44,8 +44,8 @@ const writeCardData = (
       });
       dispatch(cardSuccess({ ...cards, [cardId]: card }));
     } catch (error) {
-      const err = (error as Error).message;
-      dispatch(cardFail(err));
+      const errorMessage = (error as Error).message;
+      dispatch(cardFail(errorMessage));
     }
   };
 };
@@ -59,8 +59,8 @@ const writeBoardCardData = (boardId: string, cardId: string) => {
         cardId: cardId
       });
     } catch (error) {
-      const err = (error as Error).message;
-      dispatch(cardFail(err));
+      const errorMessage = (error as Error).message;
+      dispatch(cardFail(errorMessage));
     }
   };
 };
@@ -82,8 +82,8 @@ const getCardsData = (cardsId: string[]) => {
       }, {} as CardState);
       dispatch(cardSuccess(finalCards));
     } catch (error) {
-      const err = (error as Error).message;
-      dispatch(cardFail(err));
+      const errorMessage = (error as Error).message;
+      dispatch(cardFail(errorMessage));
     }
   };
 };
@@ -96,8 +96,8 @@ const deleteCardData = (cardId: string, cards: { [id: string]: CardState }) => {
       delete cards[`${cardId}`];
       dispatch(cardSuccess(cards));
     } catch (error) {
-      const err = (error as Error).message;
-      dispatch(cardFail(err));
+      const errorMessage = (error as Error).message;
+      dispatch(cardFail(errorMessage));
     }
   };
 };
@@ -108,8 +108,8 @@ const editCardData = (cardId: string, cardTitle: string) => {
       const db = getDatabase();
       await update(ref(db, cardsIdRef(cardId)), { title: cardTitle });
     } catch (error) {
-      const err = (error as Error).message;
-      dispatch(cardFail(err));
+      const errorMessage = (error as Error).message;
+      dispatch(cardFail(errorMessage));
     }
   };
 };
@@ -120,8 +120,8 @@ const updateCardOrderData = (cardId: string, orderNum: number) => {
       const db = getDatabase();
       update(ref(db, cardsIdRef(cardId)), { order: orderNum });
     } catch (error) {
-      const err = (error as Error).message;
-      dispatch(cardFail(err));
+      const errorMessage = (error as Error).message;
+      dispatch(cardFail(errorMessage));
     }
   };
 };

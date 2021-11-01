@@ -95,8 +95,6 @@ const Cards: React.FC<Props> = (props) => {
       createOrderNumCard,
       setCardState,
       boardId,
-      user,
-      card,
       cardTitle
     };
     dispatch(addCardThunk(addCardThunkData));
@@ -137,7 +135,6 @@ const Cards: React.FC<Props> = (props) => {
   const changeCardOrderBetweenBoardsDnD = (cardData: CardState) => {
     const data = {
       updateCardsOrder,
-      card,
       currentBordIdcard,
       cardData,
       boardId,
@@ -159,8 +156,7 @@ const Cards: React.FC<Props> = (props) => {
       changeCardOrderInBoardDnD,
       cardData,
       boardId,
-      changeCardOrderBetweenBoardsDnD,
-      user
+      changeCardOrderBetweenBoardsDnD
     };
     dispatch(dropHandlerThunk(data));
   };

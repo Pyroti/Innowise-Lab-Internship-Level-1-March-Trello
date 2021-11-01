@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import Colors from '../../../constants/colors';
-import mediaQueries from '../../../constants/mediaQueries';
+import Colors from '../../constants/colors';
+import mediaQueries from '../../constants/mediaQueries';
 
-const CloseModalWrapper = styled.div`
+const ModalWrapper = styled.div`
   width: 500px;
   height: 400px;
   box-shadow: 0 5px 16px ${Colors.formShadow};
@@ -23,4 +23,4 @@ const CloseModalWrapper = styled.div`
   }
 `;
 
-export default CloseModalWrapper;
+export default ModalWrapper;

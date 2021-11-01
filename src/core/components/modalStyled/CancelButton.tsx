@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Colors from '../../../constants/colors';
+import Colors from '../../constants/colors';
 
 const CancelButton = styled.button`
   width: 190px;

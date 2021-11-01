@@ -45,8 +45,8 @@ const writeUserData = (userId: string, username: string, email: string) => {
       });
       dispatch(userSuccess(user));
     } catch (error) {
-      const err = (error as Error).message;
-      dispatch(userFail(err));
+      const errorMessage = (error as Error).message;
+      dispatch(userFail(errorMessage));
     }
   };
 };
@@ -63,8 +63,8 @@ const writeUserBoardData = (
         boardId: boardId
       });
     } catch (error) {
-      const err = (error as Error).message;
-      dispatch(userFail(err));
+      const errorMessage = (error as Error).message;
+      dispatch(userFail(errorMessage));
     }
   };
 };
@@ -81,8 +81,8 @@ const getUserData = (currentUser: firebase.User | null) => {
         dispatch(userSuccess(data));
       }
     } catch (error) {
-      const err = (error as Error).message;
-      dispatch(userFail(err));
+      const errorMessage = (error as Error).message;
+      dispatch(userFail(errorMessage));
     }
   };
 };
@@ -93,8 +93,8 @@ const deleteBoardIdData = (userId: string, boardId: string) => {
       const db = getDatabase();
       remove(ref(db, usersBoardsRef(userId, boardId)));
     } catch (error) {
-      const err = (error as Error).message;
-      dispatch(userFail(err));
+      const errorMessage = (error as Error).message;
+      dispatch(userFail(errorMessage));
     }
   };
 };

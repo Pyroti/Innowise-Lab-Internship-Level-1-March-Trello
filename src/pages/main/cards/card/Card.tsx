@@ -8,8 +8,6 @@ import OptionWrap from './styled/OptionWrap';
 import Input from '@mui/material/Input';
 import CloseIcon from '@material-ui/icons/Close';
 import CheckIcon from '@mui/icons-material/Check';
-import { useTypedSelector } from '../../../../core/hooks/useTypeSelector';
-import cardSelector from '../../../../core/redux/selectors/cardSelector';
 import DeleteCardModal from '../../../../core/components/deleteCardModal/deleteCardModal';
 import deleteCardThunk from '../../../../core/redux/thunk/card/deleteCard';
 import editCardThunk from '../../../../core/redux/thunk/card/editCard';
@@ -22,7 +20,6 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = (props) => {
-  const cards = useTypedSelector(cardSelector).card;
   const { card, boardId, cardsId, updateCardsOrder } = props;
   const [isEditing, setIsEditing] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -68,7 +65,6 @@ const Card: React.FC<CardProps> = (props) => {
     const data = {
       updateCardsOrder,
       card,
-      cards,
       boardId,
       cardsId
     };

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import Colors from '../../../constants/colors';
+import Colors from '../../constants/colors';
 
-const CloseModalBackground = styled.div`
+const ModalBackground = styled.div`
   width: 100%;
   height: 100%;
   background: ${Colors.closeModalBackgroundBackground};
@@ -14,4 +14,4 @@ const CloseModalBackground = styled.div`
   z-index: 100;
 `;
 
-export default CloseModalBackground;
+export default ModalBackground;

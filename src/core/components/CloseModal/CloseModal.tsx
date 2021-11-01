@@ -12,12 +12,12 @@ import MainRouters from '../../constants/MainRouters';
 import { useTypedSelector } from '../../hooks/useTypeSelector';
 import { logoutInitiate } from '../../redux/action-creators/auth/logoutAction';
 import authSelector from '../../redux/selectors/authSelector';
-import CancelButton from './styled/CancelButton';
-import CloseModalBackground from './styled/CloseModalBackground';
-import CloseModalContent from './styled/CloseModalContent';
-import CloseModalIcon from './styled/CloseModalIcon';
-import CloseModalWrapper from './styled/CloseModalWrapper';
-import ExitButton from './styled/ExitButton';
+import CancelButton from '../modalStyled/CancelButton';
+import ExitButton from '../modalStyled/ExitButton';
+import ModalBackground from '../modalStyled/ModalBackground';
+import ModalContent from '../modalStyled/ModalContent';
+import ModalIcon from '../modalStyled/ModalIcon';
+import ModalWrapper from '../modalStyled/ModalWrapper';
 
 interface Props {
   modalIsOpen: boolean;
@@ -69,9 +69,9 @@ const CloseModal: React.FC<Props> = (props: Props) => {
   return (
     <>
       {modalIsOpen ? (
-        <CloseModalBackground onClick={closeModal} ref={modalRef}>
-          <CloseModalWrapper>
-            <CloseModalContent>
+        <ModalBackground onClick={closeModal} ref={modalRef}>
+          <ModalWrapper>
+            <ModalContent>
               <h1>{t('areYouSureYouWantToLogOut')}</h1>
               <Link to={MainRouters.login}>
                 <ExitButton type="button" onClick={closeApp}>
@@ -81,10 +81,10 @@ const CloseModal: React.FC<Props> = (props: Props) => {
               <CancelButton type="button" onClick={showModal}>
                 {t('cancel')}
               </CancelButton>
-            </CloseModalContent>
-            <CloseModalIcon onClick={showModal} />
-          </CloseModalWrapper>
-        </CloseModalBackground>
+            </ModalContent>
+            <ModalIcon onClick={showModal} />
+          </ModalWrapper>
+        </ModalBackground>
       ) : null}
     </>
   );

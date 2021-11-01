@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import {
   editBoardData,
   getBoardsData
@@ -7,23 +5,29 @@ import {
 import { toast, ToastOptions } from 'react-toastify';
 import toastRyles from '../../../constants/toastRules';
 import { BoardState } from '../../types/boards/boardTypes';
-import { UserState } from '../../types/users/userTypes';
+import { RootState } from '../../reducer/rootReducer';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import userSelector from '../../selectors/userSelector';
 
 interface BoardDate {
   boardData: BoardState;
   boardTitle: string;
-  user: UserState;
 }
 
-const editBoardThunk = (props: BoardDate) => {
-  return async (dispatch: any): Promise<void> => {
+const editBoardThunk = ({ boardData, boardTitle }: BoardDate) => {
+  return async (
+    dispatch: ThunkDispatch<RootState, void, Action>,
+    getState: () => RootState
+  ): Promise<void> => {
     try {
-      const { boardData, boardTitle, user } = props;
+      const state = getState();
+      const { user } = userSelector(state);
       dispatch(editBoardData(boardData.boardId, boardTitle));
       dispatch(getBoardsData(Object.keys(user.boards)));
     } catch (error) {
-      const err = (error as Error).message;
-      toast.warn(err, toastRyles as ToastOptions);
+      const errorMessage = (error as Error).message;
+      toast.warn(errorMessage, toastRyles as ToastOptions);
     }
   };
 };

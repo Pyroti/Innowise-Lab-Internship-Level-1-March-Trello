@@ -16,7 +16,6 @@ import Cards from './cards/Cards';
 import Board from './board/Board';
 import BoardWrap from './styled/BoardWrap';
 import BoardStyled from './board/styled/BoardStyled';
-import cardSelector from '../../core/redux/selectors/cardSelector';
 import sortData from '../../core/helpers/sortData';
 import addBoardThunk from '../../core/redux/thunk/main/addBoard';
 import changeBoardOrderDnDThunk from '../../core/redux/thunk/main/changeBoardOrderDnD';
@@ -28,7 +27,6 @@ const Main: React.FC = () => {
   const { currentUser } = useTypedSelector(authSelector);
   const { user } = useTypedSelector(userSelector);
   const { board } = useTypedSelector(boardSelector);
-  const { card } = useTypedSelector(cardSelector);
 
   const dispatch = useDispatch();
 
@@ -82,8 +80,6 @@ const Main: React.FC = () => {
     const data = {
       getCurrentUserData,
       setBoardState,
-      currentUser,
-      board,
       boardTitle,
       createOrderNum
     };
@@ -123,9 +119,7 @@ const Main: React.FC = () => {
       setIsUpdateCards,
       currentCard,
       currentBordIdcard,
-      card,
-      boardData,
-      user
+      boardData
     };
     dispatch(pushTheFirstCardToAnotherBoardThunk(data));
   };

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { CardState } from '../../types/cards/cardTypes';
 import {
   deleteCardData,
@@ -10,31 +8,35 @@ import {
 import { toast, ToastOptions } from 'react-toastify';
 import toastRyles from '../../../constants/toastRules';
 import { deleteCardIdData } from '../../action-creators/boards/boardAction';
+import { RootState } from '../../reducer/rootReducer';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import cardSelector from '../../selectors/cardSelector';
 
-interface changeCardOrder {
+interface ChangeCardOrder {
   showCards: (boardId: string) => CardState[];
   currentCard: CardState;
   boardId: string;
   cardData: CardState;
   currentBordIdcard: string;
   updateCardsOrder: (boardId: string) => void;
-  card: {
-    [id: string]: CardState;
-  };
 }
 
-const changeCardOrderBetweenBoardsDnDThunk = (props: changeCardOrder) => {
-  return async (dispatch: any): Promise<void> => {
+const changeCardOrderBetweenBoardsDnDThunk = ({
+  updateCardsOrder,
+  currentCard,
+  currentBordIdcard,
+  cardData,
+  boardId,
+  showCards
+}: ChangeCardOrder) => {
+  return async (
+    dispatch: ThunkDispatch<RootState, void, Action>,
+    getState: () => RootState
+  ): Promise<void> => {
     try {
-      const {
-        updateCardsOrder,
-        currentCard,
-        card,
-        currentBordIdcard,
-        cardData,
-        boardId,
-        showCards
-      } = props;
+      const state = getState();
+      const { card } = cardSelector(state);
       dispatch(deleteCardData(currentCard.cardId, card));
       dispatch(deleteCardIdData(currentCard.cardId, currentBordIdcard));
       updateCardsOrder(currentBordIdcard);
@@ -55,8 +57,8 @@ const changeCardOrderBetweenBoardsDnDThunk = (props: changeCardOrder) => {
         }
       });
     } catch (error) {
-      const err = (error as Error).message;
-      toast.warn(err, toastRyles as ToastOptions);
+      const errorMessage = (error as Error).message;
+      toast.warn(errorMessage, toastRyles as ToastOptions);
     }
   };
 };

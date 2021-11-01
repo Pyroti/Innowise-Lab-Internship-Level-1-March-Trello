@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { CardState } from '../../types/cards/cardTypes';
 import {
   editCardData,
@@ -7,6 +5,9 @@ import {
 } from '../../action-creators/cards/cardAction';
 import { toast, ToastOptions } from 'react-toastify';
 import toastRyles from '../../../constants/toastRules';
+import { RootState } from '../../reducer/rootReducer';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
 
 interface CardDate {
   cardsId: () => string[];
@@ -14,15 +15,16 @@ interface CardDate {
   card: CardState;
 }
 
-const editCardThunk = (props: CardDate) => {
-  return async (dispatch: any): Promise<void> => {
+const editCardThunk = ({ card, cardTitle, cardsId }: CardDate) => {
+  return async (
+    dispatch: ThunkDispatch<RootState, void, Action>
+  ): Promise<void> => {
     try {
-      const { card, cardTitle, cardsId } = props;
       dispatch(editCardData(card.cardId, cardTitle));
       dispatch(getCardsData(cardsId()));
     } catch (error) {
-      const err = (error as Error).message;
-      toast.warn(err, toastRyles as ToastOptions);
+      const errorMessage = (error as Error).message;
+      toast.warn(errorMessage, toastRyles as ToastOptions);
     }
   };
 };

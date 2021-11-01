@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import Color from '../../../constants/colors';
+import Color from '../../constants/colors';
 
-const CloseModalContent = styled.div`
+const ModalContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -11,4 +11,4 @@ const CloseModalContent = styled.div`
   color: ${Color.closeModalContentColor};
 `;
 
-export default CloseModalContent;
+export default ModalContent;

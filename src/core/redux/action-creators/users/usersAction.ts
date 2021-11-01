@@ -34,8 +34,8 @@ const getUsersData = () => {
         dispatch(usersSuccess(data));
       }
     } catch (error) {
-      const err = (error as Error).message;
-      dispatch(usersFail(err));
+      const errorMessage = (error as Error).message;
+      dispatch(usersFail(errorMessage));
     }
   };
 };

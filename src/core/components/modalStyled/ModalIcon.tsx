@@ -1,7 +1,7 @@
 import CloseIcon from '@material-ui/icons/Close';
 import styled from 'styled-components';
 
-const CloseModalIcon = styled(CloseIcon)`
+const ModalIcon = styled(CloseIcon)`
   cursor: pointer;
   position: absolute;
   top: 20px;
@@ -12,4 +12,4 @@ const CloseModalIcon = styled(CloseIcon)`
   z-index: 10;
 `;
 
-export default CloseModalIcon;
+export default ModalIcon;

@@ -1,20 +1,26 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { toast, ToastOptions } from 'react-toastify';
 import toastRyles from '../../../constants/toastRules';
 import { updateBoardOrderData } from '../../action-creators/boards/boardAction';
 import { BoardState } from '../../types/boards/boardTypes';
+import { RootState } from '../../reducer/rootReducer';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
 
-interface changeCardOrder {
+interface ChangeCardOrder {
   filterBoards: () => BoardState[];
   currentBoard: BoardState;
   boardData: BoardState;
 }
 
-const changeBoardOrderDnDThunk = (props: changeCardOrder) => {
-  return async (dispatch: any): Promise<void> => {
+const changeBoardOrderDnDThunk = ({
+  filterBoards,
+  currentBoard,
+  boardData
+}: ChangeCardOrder) => {
+  return async (
+    dispatch: ThunkDispatch<RootState, void, Action>
+  ): Promise<void> => {
     try {
-      const { filterBoards, currentBoard, boardData } = props;
       filterBoards().map((board) => {
         const isCurrentBoard = board.boardId === currentBoard.boardId;
 
@@ -37,8 +43,8 @@ const changeBoardOrderDnDThunk = (props: changeCardOrder) => {
         }
       });
     } catch (error) {
-      const err = (error as Error).message;
-      toast.warn(err, toastRyles as ToastOptions);
+      const errorMessage = (error as Error).message;
+      toast.warn(errorMessage, toastRyles as ToastOptions);
     }
   };
 };
