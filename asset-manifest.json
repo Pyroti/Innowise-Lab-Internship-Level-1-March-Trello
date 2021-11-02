@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.js": "/Innowise-Lab-Internship-Level-1-March-Trello/static/js/main.35c586eb.chunk.js",
+    "main.js.map": "/Innowise-Lab-Internship-Level-1-March-Trello/static/js/main.35c586eb.chunk.js.map",
+    "runtime-main.js": "/Innowise-Lab-Internship-Level-1-March-Trello/static/js/runtime-main.74a35a43.js",
+    "runtime-main.js.map": "/Innowise-Lab-Internship-Level-1-March-Trello/static/js/runtime-main.74a35a43.js.map",
+    "static/css/2.f4c56af9.chunk.css": "/Innowise-Lab-Internship-Level-1-March-Trello/static/css/2.f4c56af9.chunk.css",
+    "static/js/2.f46a5add.chunk.js": "/Innowise-Lab-Internship-Level-1-March-Trello/static/js/2.f46a5add.chunk.js",
+    "static/js/2.f46a5add.chunk.js.map": "/Innowise-Lab-Internship-Level-1-March-Trello/static/js/2.f46a5add.chunk.js.map",
+    "index.html": "/Innowise-Lab-Internship-Level-1-March-Trello/index.html",
+    "static/css/2.f4c56af9.chunk.css.map": "/Innowise-Lab-Internship-Level-1-March-Trello/static/css/2.f4c56af9.chunk.css.map",
+    "static/js/2.f46a5add.chunk.js.LICENSE.txt": "/Innowise-Lab-Internship-Level-1-March-Trello/static/js/2.f46a5add.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.74a35a43.js",
+    "static/css/2.f4c56af9.chunk.css",
+    "static/js/2.f46a5add.chunk.js",
+    "static/js/main.35c586eb.chunk.js"
+  ]
+}
