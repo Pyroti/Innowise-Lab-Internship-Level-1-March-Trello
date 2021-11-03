@@ -11,6 +11,9 @@ import Main from './pages/main/Main';
 import setUserInitiate from './core/redux/action-creators/auth/setUserAction';
 import PrivateRoute from './privateRouter';
 import { ToastContainer } from 'react-toastify';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
@@ -27,7 +30,7 @@ const App: React.FC = () => {
 
   return (
     <AppWrapper>
-      <BrowserRouter>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
         <Switch>
           <PrivateRoute exact path={MainRoutes.main} component={Main} />
           <Route path={MainRoutes.login} component={Login} />
