@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import Colors from '../../../../core/constants/colors';
+import mediaQueries from '../../../../core/constants/mediaQueries';
 
 const AddCardWrap = styled.div`
   display: flex;
@@ -13,6 +14,11 @@ const AddCardWrap = styled.div`
   padding: 10px;
   border-radius: 10px;
   border: 2px ${Colors.formMainColor} solid;
+
+  @media ${mediaQueries.mediaMobile} {
+    width: 235px;
+    min-width: 230px;
+  }
 `;
 
 export default AddCardWrap;
