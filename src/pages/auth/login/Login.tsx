@@ -8,18 +8,18 @@ import AuthContent from '../../../core/components/authContent/AuthContent';
 import AuthForm from '../../../core/components/authForm/AuthForm';
 import MainRoutes from '../../../core/constants/MainRouters';
 import { useTypedSelector } from '../../../core/hooks/useTypeSelector';
-import { googleSignInInitiate } from '../../../core/redux/action-creators/auth/googleSignInAction';
-import { loginInitiate } from '../../../core/redux/action-creators/auth/loginAction';
 import authSelector from '../../../core/redux/selectors/authSelector';
-import AuthButtons from './styled/AuthButtons';
-import GoogleButton from './styled/GoogleButton';
-import SingInButton from './styled/SingInButton';
-import SingUpButton from './styled/SingUpButton';
+import AuthButtons from '../../../core/components/buttons/AuthButtons';
+import GoogleButton from '../../../core/components/buttons/GoogleButton';
+import SingInButton from '../../../core/components/buttons/SingInButton';
+import SingUpButton from '../../../core/components/buttons/SingUpButton';
 import { ToastContainer, toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import toastRyles from '../../../core/constants/toastRules';
-import { getUsersData } from '../../../core/redux/action-creators/users/usersAction';
 import usersSelector from '../../../core/redux/selectors/usersSelectors';
+import { googleSignInInitiate } from '../../../core/redux/thunk/auth/googleSignInInitiate';
+import { loginInitiate } from '../../../core/redux/thunk/auth/loginInitiate';
+import { getUsersData } from '../../../core/redux/thunk/users/getUsersData';
 
 const Login: React.FC = () => {
   const [loginState, setLoginState] = useState({
@@ -52,10 +52,10 @@ const Login: React.FC = () => {
 
   const checkEmptyInput = () => {
     if (email === '') {
-      toast.warn(t('youDidntEnterYourPassword'), toastRyles as ToastOptions);
+      toast.warn(t('youDidNotEnterYourPassword'), toastRyles as ToastOptions);
     }
     if (password === '') {
-      toast.warn(t('youDidntEnterYourEmail'), toastRyles as ToastOptions);
+      toast.warn(t('youDidNotEnterYourEmail'), toastRyles as ToastOptions);
     }
   };
 
@@ -93,7 +93,7 @@ const Login: React.FC = () => {
         <p>{t('or')}</p>
 
         <TextField
-          id="standard-basic"
+          id="email"
           label={t('enterYourMail')}
           type="email"
           name="email"
@@ -101,7 +101,7 @@ const Login: React.FC = () => {
           onChange={handleChange}
         />
         <TextField
-          id="standard-basic"
+          id="password"
           label={t('enterYourPassword')}
           type="password"
           name="password"

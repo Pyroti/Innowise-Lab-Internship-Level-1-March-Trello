@@ -2,17 +2,15 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import sortData from '../../../core/helpers/sortData';
 import { useTypedSelector } from '../../../core/hooks/useTypeSelector';
-import {
-  getCardsData,
-  updateCardOrderData
-} from '../../../core/redux/action-creators/cards/cardAction';
 import boardSelector from '../../../core/redux/selectors/boardSelector';
 import cardSelector from '../../../core/redux/selectors/cardSelector';
 import userSelector from '../../../core/redux/selectors/userSelector';
 import addCardThunk from '../../../core/redux/thunk/cards/AddCard';
-import changeCardOrderBetweenBoardsDnDThunk from '../../../core/redux/thunk/cards/changeCardOrderBetweenBoardsDnD';
-import changeCardOrderInBoardDnDThunk from '../../../core/redux/thunk/cards/changeCardOrderInBoardDnD';
+import changeCardOrderBetweenBoardsThunk from '../../../core/redux/thunk/cards/changeCardOrderBetweenBoards';
+import changeCardOrderInBoardThunk from '../../../core/redux/thunk/cards/changeCardOrderInBoard';
 import dropHandlerThunk from '../../../core/redux/thunk/cards/dropHandler';
+import { getCardsData } from '../../../core/redux/thunk/cards/getCardsData';
+import { updateCardOrderData } from '../../../core/redux/thunk/cards/updateCardOrderData';
 import { CardState } from '../../../core/redux/types/cards/cardTypes';
 import AddCard from '../AddCard/AddCard';
 import Card from './card/Card';
@@ -21,8 +19,8 @@ interface Props {
   boardId: string;
   currentCard: CardState;
   setCurrentCard: React.Dispatch<CardState>;
-  currentBordIdcard: string;
-  setCurrentBordIdcard: React.Dispatch<string>;
+  currentBoardIdCard: string;
+  setCurrentBoardIdCard: React.Dispatch<string>;
   currentItemNameId: string;
   setCurrentItemNameId: React.Dispatch<string>;
   isUpdateCards: boolean;
@@ -39,8 +37,8 @@ const Cards: React.FC<Props> = (props) => {
     boardId,
     currentCard,
     setCurrentCard,
-    currentBordIdcard,
-    setCurrentBordIdcard,
+    currentBoardIdCard,
+    setCurrentBoardIdCard,
     currentItemNameId,
     setCurrentItemNameId,
     isUpdateCards,
@@ -52,10 +50,10 @@ const Cards: React.FC<Props> = (props) => {
 
   const { cardTitle } = cardState;
 
-  const cardsId = useCallback(() => {
+  const getCardsId = useCallback(() => {
     if (user.boards) {
       const allCardsId = Object.values(
-        Object.keys(user.boards).map((boardIdd) => board[boardIdd]?.cards)
+        Object.keys(user.boards).map((boardId) => board[boardId]?.cards)
       ).filter((card) => card);
       const finalCardsId = Object.assign({}, ...allCardsId);
       return Object.keys(finalCardsId);
@@ -66,31 +64,37 @@ const Cards: React.FC<Props> = (props) => {
 
   useEffect(() => {
     if (board && board[boardId].cards) {
-      dispatch(getCardsData(cardsId()));
+      dispatch(getCardsData(getCardsId()));
     }
-  }, [dispatch, board, boardId, cardsId]);
+  }, [dispatch, board, boardId, getCardsId]);
 
   const handleChangeCard = (event: React.ChangeEvent) => {
     const { name, value } = event.target as HTMLInputElement;
     setCardState((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const showCards = (boardId: string) => {
-    return Object.values(card).filter(
-      (element) =>
-        Object.keys(board[boardId].cards).indexOf(element.cardId) > -1
-    );
-  };
+  const getCardsForCurrentBoard = useCallback(
+    (boardId: string) => {
+      return Object.values(card).filter(
+        (element) =>
+          Object.keys(board[boardId].cards).indexOf(element.cardId) > -1
+      );
+    },
+    [board, card]
+  );
 
-  const createOrderNumCard = (currentBoardId: string): number => {
-    if (board[currentBoardId].cards) {
-      return showCards(boardId).length + 1;
-    } else {
-      return 1;
-    }
-  };
+  const createOrderNumCard = useCallback(
+    (currentBoardId: string): number => {
+      if (board[currentBoardId].cards) {
+        return getCardsForCurrentBoard(boardId).length + 1;
+      } else {
+        return 1;
+      }
+    },
+    [board, boardId, getCardsForCurrentBoard]
+  );
 
-  const addCard = () => {
+  const addCard = useCallback(() => {
     const addCardThunkData = {
       createOrderNumCard,
       setCardState,
@@ -98,27 +102,32 @@ const Cards: React.FC<Props> = (props) => {
       cardTitle
     };
     dispatch(addCardThunk(addCardThunkData));
-  };
+  }, [boardId, cardTitle, createOrderNumCard, dispatch]);
 
-  const updateCardsOrder = (boardId: string) => {
-    showCards(boardId)
-      .sort(sortData)
-      .forEach((card, index) => {
-        dispatch(updateCardOrderData(card.cardId, index + 1));
-      });
-  };
+  const updateCardsOrder = useCallback(
+    (boardId: string) => {
+      getCardsForCurrentBoard(boardId)
+        .sort(sortData)
+        .forEach((card, index) => {
+          dispatch(updateCardOrderData(card.cardId, index + 1));
+        });
+    },
+    [dispatch, getCardsForCurrentBoard]
+  );
 
-  if (isUpdateCards) {
-    updateCardsOrder(currentBordIdcard);
-    setIsUpdateCards(false);
-  }
+  useEffect(() => {
+    if (isUpdateCards) {
+      updateCardsOrder(currentBoardIdCard);
+      setIsUpdateCards(false);
+    }
+  }, [currentBoardIdCard, isUpdateCards, setIsUpdateCards, updateCardsOrder]);
 
   const dragStartHandler = (
     event: React.DragEvent<HTMLDivElement>,
     cardData: CardState
   ) => {
     setCurrentCard(cardData);
-    setCurrentBordIdcard(boardId);
+    setCurrentBoardIdCard(boardId);
     const elemName = (event.target as Element).id;
     setCurrentItemNameId(elemName);
   };
@@ -127,21 +136,21 @@ const Cards: React.FC<Props> = (props) => {
     event.preventDefault();
   };
 
-  const changeCardOrderInBoardDnD = (cardData: CardState) => {
-    const data = { showCards, currentCard, boardId, cardData };
-    dispatch(changeCardOrderInBoardDnDThunk(data));
+  const changeCardOrderInBoard = (cardData: CardState) => {
+    const data = { getCardsForCurrentBoard, currentCard, boardId, cardData };
+    dispatch(changeCardOrderInBoardThunk(data));
   };
 
-  const changeCardOrderBetweenBoardsDnD = (cardData: CardState) => {
+  const changeCardOrderBetweenBoards = (cardData: CardState) => {
     const data = {
       updateCardsOrder,
-      currentBordIdcard,
+      currentBoardIdCard,
       cardData,
       boardId,
-      showCards,
+      getCardsForCurrentBoard,
       currentCard
     };
-    dispatch(changeCardOrderBetweenBoardsDnDThunk(data));
+    dispatch(changeCardOrderBetweenBoardsThunk(data));
   };
 
   const dropHandler = (
@@ -152,39 +161,49 @@ const Cards: React.FC<Props> = (props) => {
     const data = {
       currentItemNameId,
       cardNameId,
-      currentBordIdcard,
-      changeCardOrderInBoardDnD,
+      currentBoardIdCard,
+      changeCardOrderInBoard,
       cardData,
       boardId,
-      changeCardOrderBetweenBoardsDnD
+      changeCardOrderBetweenBoards
     };
     dispatch(dropHandlerThunk(data));
   };
+  const dragStart = (cardData: CardState) => {
+    return (event: React.DragEvent<HTMLDivElement>) => {
+      dragStartHandler(event, cardData);
+    };
+  };
+
+  const dragDrop = (cardData: CardState) => {
+    return (event: React.DragEvent<HTMLDivElement>) => {
+      dropHandler(event, cardData);
+    };
+  };
+
+  const isDataExist = card && board[boardId].cards;
+  const dataToRender = (isDataExist && getCardsForCurrentBoard(boardId)) ?? [];
 
   return (
     <>
       <div>
-        {card &&
-          board[boardId].cards &&
-          showCards(boardId)
-            .sort(sortData)
-            .map((cardData) => (
-              <div
-                id="card"
-                key={cardData.cardId}
-                onDragStart={(event) => dragStartHandler(event, cardData)}
-                onDragOver={(event) => dragOverHandler(event)}
-                onDrop={(event) => dropHandler(event, cardData)}
-                draggable={true}
-              >
-                <Card
-                  cardsId={cardsId}
-                  boardId={boardId}
-                  card={cardData}
-                  updateCardsOrder={updateCardsOrder}
-                ></Card>
-              </div>
-            ))}
+        {dataToRender.sort(sortData).map((cardData) => (
+          <div
+            id="card"
+            key={cardData.cardId}
+            onDragStart={dragStart(cardData)}
+            onDragOver={dragOverHandler}
+            onDrop={dragDrop(cardData)}
+            draggable={true}
+          >
+            <Card
+              getCardsId={getCardsId}
+              boardId={boardId}
+              card={cardData}
+              updateCardsOrder={updateCardsOrder}
+            ></Card>
+          </div>
+        ))}
       </div>
       <AddCard
         title={cardTitle}

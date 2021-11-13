@@ -1,20 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTypedSelector } from '../../../core/hooks/useTypeSelector';
-import { deleteCardData } from '../../../core/redux/action-creators/cards/cardAction';
 import boardSelector from '../../../core/redux/selectors/boardSelector';
 import BoardTitle from './styled/BoardTitle';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import { BoardState } from '../../../core/redux/types/boards/boardTypes';
-import OptionWrap from '../cards/card/styled/OptionWrap';
+import OptionWrap from '../cards/card/styled/OptionContainer';
 import CreateIcon from '@mui/icons-material/Create';
 import CloseIcon from '@material-ui/icons/Close';
 import CheckIcon from '@mui/icons-material/Check';
 import Input from '@mui/material/Input';
 import cardSelector from '../../../core/redux/selectors/cardSelector';
-import DeleteBoardModal from '../../../core/components/deleteBoardModal/deleteBoardModal';
-import deleteBoardThunk from '../../../core/redux/thunk/board/deleteBoard';
-import editBoardThunk from '../../../core/redux/thunk/board/editBoard';
+import DeleteBoardModal from '../../../core/components/modals/deleteBoardModal/deleteBoardModal';
+import deleteBoardThunk from '../../../core/redux/thunk/boards/deleteBoard';
+import editBoardThunk from '../../../core/redux/thunk/boards/editBoard';
+import { deleteCardData } from '../../../core/redux/thunk/cards/deleteCardData';
 
 interface BoardProps {
   boardData: BoardState;
@@ -28,7 +28,7 @@ const Board: React.FC<BoardProps> = (props) => {
   const cards = useTypedSelector(cardSelector).card;
   const [isEditing, setIsEditing] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [boardState, setBoardate] = useState({
+  const [boardState, setBoardState] = useState({
     boardTitle: boardData.title
   });
   const { boardTitle } = boardState;
@@ -82,7 +82,7 @@ const Board: React.FC<BoardProps> = (props) => {
 
   const handleChange = (event: React.ChangeEvent) => {
     const { name, value } = event.target as HTMLInputElement;
-    setBoardate((prevState) => ({ ...prevState, [name]: value }));
+    setBoardState((prevState) => ({ ...prevState, [name]: value }));
   };
 
   const delBoard = () => deleteBoard(boardData.boardId);

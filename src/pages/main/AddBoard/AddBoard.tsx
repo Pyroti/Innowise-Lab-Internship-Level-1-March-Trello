@@ -1,10 +1,10 @@
 import Input from '@mui/material/Input';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import AddBoardButton from './styled/AddBoardButton';
-import AddBoardWrap from './styled/AddBoardWrap';
-import AddBoardWrapButton from './styled/AddBoardWrapButton';
-import CloseBoardIcon from './styled/CloseBoardIcon';
+import AddButton from '../../../core/components/buttons/AddButton';
+import AddContainer from '../../../core/components/addContainer/AddContainer';
+import AddContainerButton from '../../../core/components/buttons/AddContainerButton';
+import CloseIcon from '../../../core/components/closeIcon/CloseIcon';
 
 interface Props {
   title: string;
@@ -19,16 +19,18 @@ const AddBoard: React.FC<Props> = (props) => {
 
   const { t } = useTranslation();
 
-  const openAddwrap = () => setIsOpenAddWrap((prev) => !prev);
+  const openAddWrap = useCallback(() => {
+    setIsOpenAddWrap((prevIsOpenAddWrap) => !prevIsOpenAddWrap);
+  }, []);
 
   const keyPress = useCallback(
     (event) => {
       if (event.key === 'Enter') {
         addBoard();
-        openAddwrap();
+        openAddWrap();
       }
     },
-    [addBoard]
+    [addBoard, openAddWrap]
   );
 
   useEffect(() => {
@@ -40,7 +42,7 @@ const AddBoard: React.FC<Props> = (props) => {
 
   if (isOpenAddWrap) {
     return (
-      <AddBoardWrap>
+      <AddContainer>
         <Input
           placeholder={t('enterTitle')}
           type="text"
@@ -48,17 +50,17 @@ const AddBoard: React.FC<Props> = (props) => {
           value={title}
           onChange={handleChange}
         />
-        <AddBoardWrapButton type="button" onClick={addBoard}>
+        <AddContainerButton type="button" onClick={addBoard}>
           {t('addBoard')}
-        </AddBoardWrapButton>
-        <CloseBoardIcon onClick={openAddwrap} />
-      </AddBoardWrap>
+        </AddContainerButton>
+        <CloseIcon onClick={openAddWrap} />
+      </AddContainer>
     );
   }
   return (
-    <AddBoardButton type="button" onClick={openAddwrap}>
+    <AddButton type="button" onClick={openAddWrap}>
       {t('addBoard')}
-    </AddBoardButton>
+    </AddButton>
   );
 };
 

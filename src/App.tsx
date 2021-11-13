@@ -2,7 +2,7 @@ import firebase from 'firebase/compat/app';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import AppWrapper from './core/components/appWrapper/AppWrapper';
+import AppContainer from './core/components/AppContainer/AppContainer';
 import MainRoutes from './core/constants/MainRouters';
 import { auth } from './core/firebase/firebase';
 import Login from './pages/auth/login/Login';
@@ -29,7 +29,7 @@ const App: React.FC = () => {
   }, [dispatch]);
 
   return (
-    <AppWrapper>
+    <AppContainer>
       <BrowserRouter basename={process.env.PUBLIC_URL}>
         <Switch>
           <PrivateRoute exact path={MainRoutes.main} component={Main} />
@@ -38,7 +38,7 @@ const App: React.FC = () => {
         </Switch>
       </BrowserRouter>
       <ToastContainer />
-    </AppWrapper>
+    </AppContainer>
   );
 };
 

@@ -1,5 +1,5 @@
-enum mediaQueries {
-  labptopL = '(max-width: 1440px)',
+enum MediaQueries {
+  laptopL = '(max-width: 1440px)',
   mediaLaptop = '(max-width: 1024px)',
   mediaTablet = '(max-width: 768px)',
   mediaTabletSmall = '(max-width: 620px)',
@@ -7,4 +7,4 @@ enum mediaQueries {
   mediaMobileSmall = '(max-width: 320px)'
 }
 
-export default mediaQueries;
+export default MediaQueries;

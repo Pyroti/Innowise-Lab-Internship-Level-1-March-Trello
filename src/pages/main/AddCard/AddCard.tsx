@@ -1,10 +1,10 @@
 import Input from '@mui/material/Input';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import AddCardButton from './styled/AddCardButton';
-import AddCardWrap from './styled/AddCardWrap';
-import AddCardWrapButton from './styled/AddCardWrapButton';
-import CloseCardIcon from './styled/CloseCardIcon';
+import AddButton from '../../../core/components/buttons/AddButton';
+import AddContainer from '../../../core/components/addContainer/AddContainer';
+import AddWrapButton from '../../../core/components/buttons/AddContainerButton';
+import CloseIcon from '../../../core/components/closeIcon/CloseIcon';
 
 interface Props {
   title: string;
@@ -20,13 +20,13 @@ const AddCard: React.FC<Props> = (props) => {
 
   const { t } = useTranslation();
 
-  const openCardwrap = () => setIsOpenCardWrap((prevCardWrap) => !prevCardWrap);
+  const openCardWrap = () => setIsOpenCardWrap((prevCardWrap) => !prevCardWrap);
 
   const keyPress = useCallback(
     (event) => {
       if (event.key === 'Enter') {
         addCard(boardId);
-        openCardwrap();
+        openCardWrap();
       }
     },
     [addCard, boardId]
@@ -43,7 +43,7 @@ const AddCard: React.FC<Props> = (props) => {
 
   if (isOpenCardWrap) {
     return (
-      <AddCardWrap>
+      <AddContainer>
         <Input
           placeholder={t('enterTitle')}
           type="text"
@@ -51,17 +51,18 @@ const AddCard: React.FC<Props> = (props) => {
           value={title}
           onChange={handleChange}
         />
-        <AddCardWrapButton type="button" onClick={addCardClick}>
+        <AddWrapButton type="button" onClick={addCardClick}>
           {t('addCard')}
-        </AddCardWrapButton>
-        <CloseCardIcon onClick={openCardwrap} />
-      </AddCardWrap>
+        </AddWrapButton>
+        <CloseIcon onClick={openCardWrap} />
+      </AddContainer>
     );
   }
+
   return (
-    <AddCardButton type="button" onClick={openCardwrap}>
+    <AddButton type="button" onClick={openCardWrap}>
       {t('addCard')}
-    </AddCardButton>
+    </AddButton>
   );
 };
 

@@ -1,4 +1,4 @@
-enum Сolors {
+enum Colors {
   wrapper = 'linear-gradient(45deg, #EEE4EA, #E4E8F9)',
   formBackground = '#fff',
   formShadow = 'rgba(34, 60, 80, 0.42)',
@@ -26,4 +26,4 @@ enum Сolors {
   closeModalBackgroundBackground = 'rgba(0,0,0,0.8)'
 }
 
-export default Сolors;
+export default Colors;

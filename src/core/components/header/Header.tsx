@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTypedSelector } from '../../hooks/useTypeSelector';
 import userSelector from '../../redux/selectors/userSelector';
-import CloseModal from '../closeModal/CloseModal';
-import HeaderButtonStyled from './styled/HeaderButtonStyled';
-import HeaderContentWidth from './styled/HeaderContentWidth';
-import HeaderStyled from './styled/HeaderStyled';
+import CloseModal from '../modals/closeModal/CloseModal';
+import HeaderButtonContainer from './styled/HeaderButtonContainer';
+import HeaderContentContainer from './styled/HeaderContentContainer';
+import HeaderContainer from './styled/HeaderContainer';
+import HeaderWelcome from './styled/HeaderWelcome';
 
 const Header: React.FC = () => {
   const { user } = useTypedSelector(userSelector);
@@ -18,25 +19,23 @@ const Header: React.FC = () => {
   };
 
   return (
-    <HeaderStyled>
-      <HeaderContentWidth>
+    <HeaderContainer>
+      <HeaderContentContainer>
         <h2>{t('marchTrello')}</h2>
-      </HeaderContentWidth>
+      </HeaderContentContainer>
 
-      <HeaderContentWidth>
-        <h2>
-          {t('hello')} {user?.username}
-        </h2>
-      </HeaderContentWidth>
+      <HeaderWelcome>
+        {t('hello')} {user?.username}
+      </HeaderWelcome>
 
-      <HeaderContentWidth>
-        <HeaderButtonStyled onClick={openCloseModal}>
+      <HeaderContentContainer>
+        <HeaderButtonContainer onClick={openCloseModal}>
           <ExitToAppIcon />
-        </HeaderButtonStyled>
-      </HeaderContentWidth>
+        </HeaderButtonContainer>
+      </HeaderContentContainer>
 
       <CloseModal modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} />
-    </HeaderStyled>
+    </HeaderContainer>
   );
 };
 

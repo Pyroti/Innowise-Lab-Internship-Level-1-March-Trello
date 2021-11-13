@@ -1,5 +1,5 @@
 import { TextField } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
@@ -7,34 +7,60 @@ import AuthContent from '../../../core/components/authContent/AuthContent';
 import AuthForm from '../../../core/components/authForm/AuthForm';
 import MainRoutes from '../../../core/constants/MainRouters';
 import { useTypedSelector } from '../../../core/hooks/useTypeSelector';
-import { registerInitiate } from '../../../core/redux/action-creators/auth/registerAction';
-import { writeUserData } from '../../../core/redux/action-creators/users/userAction';
 import authSelector from '../../../core/redux/selectors/authSelector';
-import AuthButtons from './styled/AuthButtons';
-import SingInButton from './styled/SingInButton';
-import SingUpButton from './styled/SingUpButton';
-import { getUsersData } from '../../../core/redux/action-creators/users/usersAction';
+import AuthButtons from '../../../core/components/buttons/AuthButtons';
+import SingInButton from '../../../core/components/buttons/SingInButton';
+import SingUpButton from '../../../core/components/buttons/SingUpButton';
 import { ToastContainer, toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import usersSelector from '../../../core/redux/selectors/usersSelectors';
-import regepx from '../../../core/constants/regepx';
+// import usersSelector from '../../../core/redux/selectors/usersSelectors';
 import toastRyles from '../../../core/constants/toastRules';
+import { useFormik } from 'formik';
+import { registerInitiate } from '../../../core/redux/thunk/auth/registerInitiate';
+import { getUsersData } from '../../../core/redux/thunk/users/getUsersData';
+import { writeUserData } from '../../../core/redux/thunk/users/writeUserData';
+import { validate } from './validate/validate';
 
 const Register: React.FC = () => {
-  const [registerState, setRegisterState] = useState({
-    displayName: '',
-    email: '',
-    password: '',
-    passwordConfirm: ''
-  });
-  const { email, password, displayName, passwordConfirm } = registerState;
-
-  const { currentUser } = useTypedSelector(authSelector);
-  const { users } = useTypedSelector(usersSelector);
-
-  const history = useHistory();
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const history = useHistory();
+  const { currentUser } = useTypedSelector(authSelector);
+  // const { users } = useTypedSelector(usersSelector);
+
+  const formik = useFormik({
+    initialValues: {
+      displayName: '',
+      email: '',
+      password: '',
+      passwordConfirm: ''
+    },
+    validate,
+    onSubmit: (values) => {
+      if (formik.errors.displayName) {
+        toast.warn(t('displayNameEmpty'), toastRyles as ToastOptions);
+      }
+      if (!formik.errors.email) {
+        toast.warn(t('invalidLogin'), toastRyles as ToastOptions);
+      }
+      if (!formik.errors.password) {
+        toast.warn(t('passwordRules'), toastRyles as ToastOptions);
+      }
+      if (formik.errors.passwordConfirm) {
+        toast.warn(t('passwordRules'), toastRyles as ToastOptions);
+      }
+      if (
+        formik.errors.displayName &&
+        formik.errors.email &&
+        formik.errors.password &&
+        formik.errors.passwordConfirm
+      ) {
+        dispatch(
+          registerInitiate(values.email, values.password, values.displayName)
+        );
+      }
+    }
+  });
 
   useEffect(() => {
     if (currentUser) {
@@ -48,128 +74,66 @@ const Register: React.FC = () => {
 
   useEffect(() => {
     if (currentUser) {
-      dispatch(writeUserData(currentUser?.uid, displayName, email));
-      setRegisterState({
-        email: '',
-        password: '',
-        displayName: '',
-        passwordConfirm: ''
-      });
+      dispatch(
+        writeUserData(
+          currentUser?.uid,
+          formik.values.displayName,
+          formik.values.email
+        )
+      );
     }
-  }, [currentUser, dispatch, displayName, email]);
+  }, [currentUser, dispatch, formik.values.displayName, formik.values.email]);
 
-  const handleChange = (event: React.ChangeEvent) => {
-    const { name, value } = event.target as HTMLInputElement;
-    setRegisterState((prevState) => ({ ...prevState, [name]: value }));
-  };
-
-  const checkPassword = () => {
-    if (!regepx.regPasswordRules.test(password)) {
-      toast.warn(t('passwordRules'), toastRyles as ToastOptions);
-      return false;
-    } else {
-      return true;
-    }
-  };
-
-  const checkMail = () => {
-    if (!regepx.regMailRules.test(email)) {
-      toast.warn(t('invalidLogin'), toastRyles as ToastOptions);
-      return false;
-    } else {
-      return true;
-    }
-  };
-
-  const checkDisplayName = () => {
-    if (displayName === '') {
-      toast.warn(t('displayNameEmpty'), toastRyles as ToastOptions);
-      return false;
-    } else {
-      return true;
-    }
-  };
-
-  const checkPasswordMathes = () => {
-    if (password !== passwordConfirm) {
-      toast.warn(t('passwordsDoNotMatch'), toastRyles as ToastOptions);
-      return false;
-    } else {
-      return true;
-    }
-  };
-
-  const checkUserExist = () => {
-    const usersMail = Object.values(users).map((user) => user.email);
-    if (usersMail.indexOf(email) != -1) {
-      toast.warn(t('theUserExists'), toastRyles as ToastOptions);
-      return false;
-    } else {
-      return true;
-    }
-  };
-
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    const correctPassword = checkPassword();
-    const passwordsMatches = checkPasswordMathes();
-    const correctMail = checkMail();
-    const nameIsNotEmpty = checkDisplayName();
-    const userExists = checkUserExist();
-
-    if (
-      userExists &&
-      nameIsNotEmpty &&
-      correctMail &&
-      correctPassword &&
-      passwordsMatches
-    ) {
-      dispatch(registerInitiate(email, password, displayName));
-    }
-  };
+  // const checkUserExist = () => {
+  //   const usersMail = Object.values(users).map((user) => user.email);
+  //   if (usersMail.indexOf(formik.values.email) != -1) {
+  //     toast.warn(t('theUserExists'), toastRyles as ToastOptions);
+  //     return false;
+  //   } else {
+  //     return true;
+  //   }
+  // };
 
   return (
     <AuthContent>
-      <AuthForm onSubmit={handleSubmit}>
+      <AuthForm onSubmit={formik.handleSubmit}>
         <h1>{t('registration')}</h1>
         <TextField
-          id="standard-basic"
+          id="displayName"
           label={t('enterYourName')}
           type="text"
           name="displayName"
-          value={displayName}
-          onChange={handleChange}
+          value={formik.values.displayName}
+          onChange={formik.handleChange}
         />
         <TextField
-          id="standard-basic"
+          id="email"
           label={t('enterYourMail')}
           type="email"
           name="email"
-          value={email}
-          onChange={handleChange}
+          value={formik.values.email}
+          onChange={formik.handleChange}
         />
         <TextField
-          id="standard-basic"
+          id="password"
           label={t('enterYourPassword')}
           type="password"
           name="password"
-          value={password}
-          onChange={handleChange}
+          value={formik.values.password}
+          onChange={formik.handleChange}
         />
         <TextField
-          id="standard-basic"
+          id="passwordConfirm"
           label={t('reEnterYourPassword')}
           type="password"
           name="passwordConfirm"
-          value={passwordConfirm}
-          onChange={handleChange}
+          value={formik.values.passwordConfirm}
+          onChange={formik.handleChange}
         />
         <AuthButtons>
-          <SingUpButton type="button" onClick={handleSubmit}>
-            {t('createAccount')}
-          </SingUpButton>
+          <SingInButton type="submit">{t('createAccount')}</SingInButton>
           <Link to={MainRoutes.login}>
-            <SingInButton type="button">{t('goBack')}</SingInButton>
+            <SingUpButton type="button">{t('goBack')}</SingUpButton>
           </Link>
         </AuthButtons>
       </AuthForm>

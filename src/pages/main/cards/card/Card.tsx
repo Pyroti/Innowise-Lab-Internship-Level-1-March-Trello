@@ -1,44 +1,44 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { CardState } from '../../../../core/redux/types/cards/cardTypes';
-import CardStyled from '../styled/CardsStyled';
+import CardsContainer from '../styled/CardsContainer';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import { useDispatch } from 'react-redux';
 import CreateIcon from '@mui/icons-material/Create';
-import OptionWrap from './styled/OptionWrap';
+import OptionContainer from './styled/OptionContainer';
 import Input from '@mui/material/Input';
 import CloseIcon from '@material-ui/icons/Close';
 import CheckIcon from '@mui/icons-material/Check';
-import DeleteCardModal from '../../../../core/components/deleteCardModal/deleteCardModal';
-import deleteCardThunk from '../../../../core/redux/thunk/card/deleteCard';
-import editCardThunk from '../../../../core/redux/thunk/card/editCard';
+import DeleteCardModal from '../../../../core/components/modals/deleteCardModal/deleteCardModal';
+import deleteCardThunk from '../../../../core/redux/thunk/cards/deleteCard';
+import editCardThunk from '../../../../core/redux/thunk/cards/editCard';
 
 interface CardProps {
   card: CardState;
   boardId: string;
-  cardsId: () => string[];
+  getCardsId: () => string[];
   updateCardsOrder: (boardsId: string) => void;
 }
 
 const Card: React.FC<CardProps> = (props) => {
-  const { card, boardId, cardsId, updateCardsOrder } = props;
+  const { card, boardId, getCardsId, updateCardsOrder } = props;
   const [isEditing, setIsEditing] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [cardState, setCardtate] = useState({
+  const [cardState, setCardState] = useState({
     cardTitle: card.title
   });
   const { cardTitle } = cardState;
 
   const dispatch = useDispatch();
 
-  const isEditCard = () => {
+  const updateEditCard = () => {
     setIsEditing((prev) => !prev);
   };
 
   const editCard = useCallback(() => {
-    const data = { card, cardTitle, cardsId };
+    const data = { card, cardTitle, getCardsId };
     dispatch(editCardThunk(data));
-    isEditCard();
-  }, [card, cardTitle, cardsId, dispatch]);
+    updateEditCard();
+  }, [card, cardTitle, getCardsId, dispatch]);
 
   const keyPress = useCallback(
     (event) => {
@@ -58,7 +58,7 @@ const Card: React.FC<CardProps> = (props) => {
 
   const handleChange = (event: React.ChangeEvent) => {
     const { name, value } = event.target as HTMLInputElement;
-    setCardtate((prevState) => ({ ...prevState, [name]: value }));
+    setCardState((prevState) => ({ ...prevState, [name]: value }));
   };
 
   const deleteCard = () => {
@@ -66,7 +66,7 @@ const Card: React.FC<CardProps> = (props) => {
       updateCardsOrder,
       card,
       boardId,
-      cardsId
+      getCardsId
     };
     dispatch(deleteCardThunk(data));
   };
@@ -77,7 +77,7 @@ const Card: React.FC<CardProps> = (props) => {
 
   if (isEditing) {
     return (
-      <CardStyled>
+      <CardsContainer>
         <Input
           placeholder={card.title}
           type="text"
@@ -85,25 +85,25 @@ const Card: React.FC<CardProps> = (props) => {
           value={cardTitle}
           onChange={handleChange}
         />
-        <OptionWrap>
+        <OptionContainer>
           <CheckIcon onClick={editCard} />
-          <CloseIcon onClick={isEditCard} />
-        </OptionWrap>
-      </CardStyled>
+          <CloseIcon onClick={updateEditCard} />
+        </OptionContainer>
+      </CardsContainer>
     );
   }
 
   return (
     <>
-      <CardStyled>
+      <CardsContainer>
         {card.order}
         {':'}
         {card.title}
-        <OptionWrap>
-          <CreateIcon onClick={isEditCard} />
+        <OptionContainer>
+          <CreateIcon onClick={updateEditCard} />
           <DeleteRoundedIcon onClick={openDeleteCardModal} />
-        </OptionWrap>
-      </CardStyled>
+        </OptionContainer>
+      </CardsContainer>
       <DeleteCardModal
         modalIsOpen={modalIsOpen}
         setIsOpen={setIsOpen}

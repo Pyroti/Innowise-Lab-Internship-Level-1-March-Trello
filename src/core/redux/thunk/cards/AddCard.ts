@@ -1,9 +1,4 @@
 import { v4 as uuidv4 } from 'uuid';
-import { getBoardsData } from '../../action-creators/boards/boardAction';
-import {
-  writeBoardCardData,
-  writeCardData
-} from '../../action-creators/cards/cardAction';
 import { toast, ToastOptions } from 'react-toastify';
 import toastRyles from '../../../constants/toastRules';
 import { ThunkDispatch } from 'redux-thunk';
@@ -11,6 +6,9 @@ import { RootState } from '../../reducer/rootReducer';
 import { Action } from 'redux';
 import userSelector from '../../selectors/userSelector';
 import cardSelector from '../../selectors/cardSelector';
+import { writeCardData } from './writeCardData';
+import { writeBoardCardData } from './writeBoardCardData';
+import { getBoardsData } from '../boards/getBoardsData';
 
 interface CardDate {
   createOrderNumCard: (currentBoardId: string) => number;

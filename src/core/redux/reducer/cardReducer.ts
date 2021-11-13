@@ -28,7 +28,7 @@ const userReducer = (
         ...state,
         isLoading: true
       };
-    case CardActionTypes.CARD_SUCCSES:
+    case CardActionTypes.CARD_SUCCESS:
       return {
         ...state,
         isLoading: false,

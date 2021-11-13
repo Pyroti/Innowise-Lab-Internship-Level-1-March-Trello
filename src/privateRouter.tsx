@@ -3,10 +3,10 @@ import { Redirect, Route, RouteProps } from 'react-router-dom';
 import MainRoutes from './core/constants/MainRouters';
 import { useTypedSelector } from './core/hooks/useTypeSelector';
 import authSelector from './core/redux/selectors/authSelector';
+import { History } from 'history';
 
 interface PrivateRouteProps extends RouteProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  component: any;
+  component: React.FC<{ history: History<unknown> }>;
 }
 
 const PrivateRoute = (props: PrivateRouteProps): JSX.Element => {

@@ -1,6 +1,6 @@
 export enum CardActionTypes {
   CARD_START = 'CARD_START',
-  CARD_SUCCSES = 'CARD_SUCCSES',
+  CARD_SUCCESS = 'CARD_SUCCESS',
   CARD_FAIL = 'CARD_FAIL'
 }
 
@@ -16,7 +16,7 @@ interface CardStartAction {
 }
 
 interface CardSuccessAction {
-  type: CardActionTypes.CARD_SUCCSES;
+  type: CardActionTypes.CARD_SUCCESS;
   payload: {
     [id: string]: CardState;
   };

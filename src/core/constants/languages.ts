@@ -1,6 +1,6 @@
-enum languages {
+enum Languages {
   ru = 'ru',
   en = 'en'
 }
 
-export default languages;
+export default Languages;

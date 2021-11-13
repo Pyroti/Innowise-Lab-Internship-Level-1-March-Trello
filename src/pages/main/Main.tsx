@@ -1,12 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Header from '../../core/components/header/Header';
 import { useTypedSelector } from '../../core/hooks/useTypeSelector';
-import {
-  getBoardsData,
-  updateBoardOrderData
-} from '../../core/redux/action-creators/boards/boardAction';
-import { getUserData } from '../../core/redux/action-creators/users/userAction';
 import authSelector from '../../core/redux/selectors/authSelector';
 import boardSelector from '../../core/redux/selectors/boardSelector';
 import userSelector from '../../core/redux/selectors/userSelector';
@@ -14,12 +9,15 @@ import { BoardState } from '../../core/redux/types/boards/boardTypes';
 import AddBoard from './AddBoard/AddBoard';
 import Cards from './cards/Cards';
 import Board from './board/Board';
-import BoardWrap from './styled/BoardWrap';
-import BoardStyled from './board/styled/BoardStyled';
+import BoardContainer from './board/styled/BoardContainer';
 import sortData from '../../core/helpers/sortData';
-import addBoardThunk from '../../core/redux/thunk/main/addBoard';
-import changeBoardOrderDnDThunk from '../../core/redux/thunk/main/changeBoardOrderDnD';
-import pushTheFirstCardToAnotherBoardThunk from '../../core/redux/thunk/main/pushTheFirstCardToAnotherBoard';
+import addBoardThunk from '../../core/redux/thunk/boards/addBoard';
+import pushTheFirstCardToAnotherBoardThunk from '../../core/redux/thunk/boards/pushTheFirstCardToAnotherBoard';
+import changeBoardOrderThunk from '../../core/redux/thunk/boards/changeBoardOrder';
+import BoardsContainer from './styled/BoardsContainer';
+import { getBoardsData } from '../../core/redux/thunk/boards/getBoardsData';
+import { updateBoardOrderData } from '../../core/redux/thunk/boards/updateBoardOrderData';
+import { getUserData } from '../../core/redux/thunk/users/getUserData';
 
 const boardNameId = 'board';
 
@@ -37,13 +35,13 @@ const Main: React.FC = () => {
   const [currentItemNameId, setCurrentItemNameId] = useState(null);
   const [currentBoard, setCurrentBoard] = useState(null);
 
-  const [currentBordIdcard, setCurrentBordIdcard] = useState(null);
+  const [currentBoardIdCard, setCurrentBoardIdCard] = useState(null);
   const [currentCard, setCurrentCard] = useState(null);
   const [isUpdateCards, setIsUpdateCards] = useState(false);
 
-  const getCurrentUserData = () => {
+  const getCurrentUserData = useCallback(() => {
     dispatch(getUserData(currentUser));
-  };
+  }, [currentUser, dispatch]);
 
   useEffect(() => {
     dispatch(getUserData(currentUser));
@@ -68,15 +66,15 @@ const Main: React.FC = () => {
       .filter((board) => board);
   };
 
-  const createOrderNum = () => {
+  const createOrderNum = useCallback(() => {
     if (user.boards) {
       return Object.keys(user.boards).length + 1;
     } else {
       return 1;
     }
-  };
+  }, [user.boards]);
 
-  const addBoard = () => {
+  const addBoard = useCallback(() => {
     const data = {
       getCurrentUserData,
       setBoardState,
@@ -84,7 +82,7 @@ const Main: React.FC = () => {
       createOrderNum
     };
     dispatch(addBoardThunk(data));
-  };
+  }, [boardTitle, createOrderNum, dispatch, getCurrentUserData]);
 
   const dataToRender = Object.values(filterBoards() ?? []);
 
@@ -109,16 +107,16 @@ const Main: React.FC = () => {
     event.preventDefault();
   };
 
-  const changeBoardOrderDnD = (boardData: BoardState) => {
+  const changeBoardOrder = (boardData: BoardState) => {
     const data = { filterBoards, currentBoard, boardData };
-    dispatch(changeBoardOrderDnDThunk(data));
+    dispatch(changeBoardOrderThunk(data));
   };
 
   const pushTheFirstCardToAnotherBoard = (boardData: BoardState) => {
     const data = {
       setIsUpdateCards,
       currentCard,
-      currentBordIdcard,
+      currentBoardIdCard,
       boardData
     };
     dispatch(pushTheFirstCardToAnotherBoardThunk(data));
@@ -131,27 +129,39 @@ const Main: React.FC = () => {
     event.preventDefault();
     const isBoard = currentItemNameId === boardNameId;
     if (isBoard) {
-      changeBoardOrderDnD(boardData);
+      changeBoardOrder(boardData);
     } else if (!boardData.cards) {
       pushTheFirstCardToAnotherBoard(boardData);
     }
     getCurrentUserData();
   };
 
+  const dragStart = (boardData: BoardState) => {
+    return (event: React.DragEvent<HTMLDivElement>) => {
+      dragStartHandler(event, boardData);
+    };
+  };
+
+  const dragDrop = (boardData: BoardState) => {
+    return (event: React.DragEvent<HTMLDivElement>) => {
+      dropHandler(event, boardData);
+    };
+  };
+
   return (
     <>
       <Header />
-      <BoardWrap>
+      <BoardsContainer>
         {board &&
           dataToRender.sort(sortData).map((boardData) => {
             return (
               board && (
-                <BoardStyled
+                <BoardContainer
                   key={boardData.boardId}
                   id="board"
-                  onDragStart={(event) => dragStartHandler(event, boardData)}
-                  onDragOver={(event) => dragOverHandler(event)}
-                  onDrop={(event) => dropHandler(event, boardData)}
+                  onDragStart={dragStart(boardData)}
+                  onDragOver={dragOverHandler}
+                  onDrop={dragDrop(boardData)}
                   draggable={true}
                 >
                   <Board
@@ -162,14 +172,14 @@ const Main: React.FC = () => {
                     boardId={boardData.boardId}
                     currentCard={currentCard}
                     setCurrentCard={setCurrentCard}
-                    currentBordIdcard={currentBordIdcard}
-                    setCurrentBordIdcard={setCurrentBordIdcard}
+                    currentBoardIdCard={currentBoardIdCard}
+                    setCurrentBoardIdCard={setCurrentBoardIdCard}
                     currentItemNameId={currentItemNameId}
                     setCurrentItemNameId={setCurrentItemNameId}
                     isUpdateCards={isUpdateCards}
                     setIsUpdateCards={setIsUpdateCards}
                   />
-                </BoardStyled>
+                </BoardContainer>
               )
             );
           })}
@@ -179,7 +189,7 @@ const Main: React.FC = () => {
           handleChange={handleChangeBoard}
           addBoard={addBoard}
         />
-      </BoardWrap>
+      </BoardsContainer>
     </>
   );
 };
