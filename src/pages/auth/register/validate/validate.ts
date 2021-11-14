@@ -1,37 +1,29 @@
 import regexp from '../../../../core/constants/regexp';
+import i18n from '../../../../core/i18n/i18n';
 
-interface ValuesType {
-  password: string;
-  email: string;
-  displayName: string;
-  passwordConfirm: string;
+interface ValuesType<T = string> {
+  password: T;
+  email: T;
+  displayName: T;
+  passwordConfirm: T;
 }
 
-interface ErrorType {
-  password: boolean;
-  email: boolean;
-  displayName: boolean;
-  passwordConfirm: boolean;
-}
+type ErrorType = Partial<ValuesType<string | boolean>>;
 
-export const validate = (values: ValuesType): ErrorType => {
-  const errors = {
-    displayName: true,
-    email: true,
-    password: true,
-    passwordConfirm: true
-  };
+export const validate = (values: ValuesType<string>): ErrorType => {
+  const errors: ErrorType = {};
+
   if (values.displayName === '') {
-    errors.displayName = false;
+    errors.displayName = i18n.t('displayNameEmpty') as string;
   }
   if (!regexp.regMailRules.test(values.email)) {
-    errors.email = false;
+    errors.email = i18n.t('invalidLogin') as string;
   }
   if (!regexp.regPasswordRules.test(values.password)) {
-    errors.password = false;
+    errors.password = i18n.t('passwordRules') as string;
   }
   if (values.password !== values.passwordConfirm) {
-    errors.passwordConfirm = false;
+    errors.passwordConfirm = i18n.t('passwordsDoNotMatch') as string;
   }
 
   return errors;

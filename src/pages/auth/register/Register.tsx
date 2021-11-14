@@ -11,22 +11,19 @@ import authSelector from '../../../core/redux/selectors/authSelector';
 import AuthButtons from '../../../core/components/buttons/AuthButtons';
 import SingInButton from '../../../core/components/buttons/SingInButton';
 import SingUpButton from '../../../core/components/buttons/SingUpButton';
-import { ToastContainer, toast, ToastOptions } from 'react-toastify';
+import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-// import usersSelector from '../../../core/redux/selectors/usersSelectors';
-import toastRyles from '../../../core/constants/toastRules';
 import { useFormik } from 'formik';
 import { registerInitiate } from '../../../core/redux/thunk/auth/registerInitiate';
-import { getUsersData } from '../../../core/redux/thunk/users/getUsersData';
 import { writeUserData } from '../../../core/redux/thunk/users/writeUserData';
 import { validate } from './validate/validate';
+import toastRyles from '../../../core/constants/toastRules';
 
 const Register: React.FC = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const history = useHistory();
   const { currentUser } = useTypedSelector(authSelector);
-  // const { users } = useTypedSelector(usersSelector);
 
   const formik = useFormik({
     initialValues: {
@@ -35,29 +32,18 @@ const Register: React.FC = () => {
       password: '',
       passwordConfirm: ''
     },
-    validate,
     onSubmit: (values) => {
-      if (formik.errors.displayName) {
-        toast.warn(t('displayNameEmpty'), toastRyles as ToastOptions);
-      }
-      if (!formik.errors.email) {
-        toast.warn(t('invalidLogin'), toastRyles as ToastOptions);
-      }
-      if (!formik.errors.password) {
-        toast.warn(t('passwordRules'), toastRyles as ToastOptions);
-      }
-      if (formik.errors.passwordConfirm) {
-        toast.warn(t('passwordRules'), toastRyles as ToastOptions);
-      }
-      if (
-        formik.errors.displayName &&
-        formik.errors.email &&
-        formik.errors.password &&
-        formik.errors.passwordConfirm
-      ) {
+      const errors = validate(values);
+      const errorsValues = Object.values(errors);
+      const hasErrors = errorsValues.length > 0;
+      if (!hasErrors) {
         dispatch(
           registerInitiate(values.email, values.password, values.displayName)
         );
+      } else {
+        errorsValues.forEach((errorMessage) => {
+          toast.warn(errorMessage, toastRyles as ToastOptions);
+        });
       }
     }
   });
@@ -67,10 +53,6 @@ const Register: React.FC = () => {
       history.push(MainRoutes.main);
     }
   }, [currentUser, history]);
-
-  useEffect(() => {
-    dispatch(getUsersData());
-  }, [dispatch]);
 
   useEffect(() => {
     if (currentUser) {
@@ -83,16 +65,6 @@ const Register: React.FC = () => {
       );
     }
   }, [currentUser, dispatch, formik.values.displayName, formik.values.email]);
-
-  // const checkUserExist = () => {
-  //   const usersMail = Object.values(users).map((user) => user.email);
-  //   if (usersMail.indexOf(formik.values.email) != -1) {
-  //     toast.warn(t('theUserExists'), toastRyles as ToastOptions);
-  //     return false;
-  //   } else {
-  //     return true;
-  //   }
-  // };
 
   return (
     <AuthContent>
@@ -137,7 +109,6 @@ const Register: React.FC = () => {
           </Link>
         </AuthButtons>
       </AuthForm>
-      <ToastContainer />
     </AuthContent>
   );
 };

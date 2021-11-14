@@ -4,6 +4,7 @@
     "firestore",
     "Formik",
     "Mathes",
+    "preconnect",
     "predeploy",
     "Ryles",
     "toastify",

@@ -20,7 +20,9 @@ const AddCard: React.FC<Props> = (props) => {
 
   const { t } = useTranslation();
 
-  const openCardWrap = () => setIsOpenCardWrap((prevCardWrap) => !prevCardWrap);
+  const openCardWrap = useCallback(() => {
+    setIsOpenCardWrap((prevCardWrap) => !prevCardWrap);
+  }, []);
 
   const keyPress = useCallback(
     (event) => {
@@ -29,7 +31,7 @@ const AddCard: React.FC<Props> = (props) => {
         openCardWrap();
       }
     },
-    [addCard, boardId]
+    [addCard, boardId, openCardWrap]
   );
 
   useEffect(() => {

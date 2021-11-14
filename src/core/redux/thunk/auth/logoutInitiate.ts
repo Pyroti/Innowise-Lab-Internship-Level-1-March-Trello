@@ -8,11 +8,14 @@ import {
 import { LogoutAction } from '../../types/auth/logoutTypes';
 
 export const logoutInitiate = () => {
-  return (dispatch: Dispatch<LogoutAction>): void => {
-    dispatch(logoutStart());
-    auth
-      .signOut()
-      .then(() => dispatch(logoutSuccess()))
-      .catch((error: Error) => dispatch(logoutFail(error.message)));
+  return async (dispatch: Dispatch<LogoutAction>): Promise<void> => {
+    try {
+      dispatch(logoutStart());
+      await auth.signOut();
+      dispatch(logoutSuccess());
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      dispatch(logoutFail(errorMessage));
+    }
   };
 };

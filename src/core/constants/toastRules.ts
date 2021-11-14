@@ -1,5 +1,5 @@
 const toastRyles = {
-  position: 'bottom-right',
+  position: 'top-right',
   autoClose: 3000,
   hideProgressBar: false,
   closeOnClick: true,
