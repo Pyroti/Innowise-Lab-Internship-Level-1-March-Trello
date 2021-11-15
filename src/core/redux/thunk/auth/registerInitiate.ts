@@ -10,6 +10,7 @@ import { RegisterAction } from '../../types/auth/registerTypes';
 import i18n from '../../../../core/i18n/i18n';
 import toastRyles from '../../../constants/toastRules';
 import AuthError from '../../../constants/authErrors';
+import { FirebaseError } from '@firebase/util';
 
 export const registerInitiate = (
   email: string,
@@ -27,12 +28,13 @@ export const registerInitiate = (
         displayName
       });
       dispatch(registerSuccess(user));
-    } catch (error) {
-      const errorMessage = (error as Error).message;
-      if (AuthError.emailAlreadyInUse === errorMessage) {
-        toast.warn(i18n.t('theUserExists'), toastRyles as ToastOptions);
+    } catch (error: FirebaseError | unknown) {
+      if (error instanceof FirebaseError) {
+        if (AuthError.emailAlreadyInUse === error.code) {
+          toast.warn(i18n.t('theUserExists'), toastRyles as ToastOptions);
+        }
+        dispatch(registerFail(error.code));
       }
-      dispatch(registerFail(errorMessage));
     }
   };
 };
